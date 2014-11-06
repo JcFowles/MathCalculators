@@ -15,87 +15,80 @@ BOOL CALLBACK DialogProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam)
 				SendMessage(hDlg, WM_CLOSE, 0, 0);
 				return TRUE;
 			}
-		case IDC_APPPLY_MUTLIPY:
+		case IDC_RANDOM:
 			{
-				int rowNum = 0;
-				if( (GetDlgItemInt(hDlg,IDC_MULTIPLY_ROW_NUM,0,1) <= 3) &&
-					(GetDlgItemInt(hDlg,IDC_MULTIPLY_ROW_NUM,0,1) >= 1) )
-
-				{
-					rowNum = (GetDlgItemInt(hDlg,IDC_MULTIPLY_ROW_NUM,0,1));
-				}
-
-				if(rowNum != 0)
-				{
-					//GaussianMultiply();
-				}
-				else
-				{
-					MessageBox(hDlg, TEXT("Error\n Incorrect Row choice in Multiply Row \n please enter Number from 1 to 3"), TEXT("Error"),MB_ICONQUESTION | MB_OK) ;
-				}
-				break;	
-				//SetDlgItemInt(hDlg,IDC_MATRIX_00,(GetDlgItemInt(hDlg,IDC_MATRIX_00,0,1)*GetDlgItemInt(hDlg,IDC_MATRIX_00,0,1)),1);
-			}
-		case IDC_APPPLY_SWAP:
+				RandomInitialise(hDlg);
+				break;
+			}	
+		case IDC_APPLY_MUTLIPY:
 			{
-				int iRowA = 0;
-				int iRowB = 0;
-				if( (GetDlgItemInt(hDlg,IDC_SWAP_ROW_A,0,1) <= 3) &&
-					(GetDlgItemInt(hDlg,IDC_SWAP_ROW_A,0,1) >= 1) &&
-					(GetDlgItemInt(hDlg,IDC_SWAP_ROW_B,0,1) <= 3) &&
-					(GetDlgItemInt(hDlg,IDC_SWAP_ROW_B,0,1) >= 1))
-
+				if (RowInputCheck(hDlg, 1))
 				{
-					iRowA = (GetDlgItemInt(hDlg,IDC_SWAP_ROW_A,0,1));
-					iRowB = (GetDlgItemInt(hDlg,IDC_SWAP_ROW_B,0,1));
+					GaussianMultiply(hDlg);
 				}
+				if (EchelonCheck(hDlg))
+				{
+					MessageBox(hDlg, TEXT("Row Echelon"), TEXT("Row Echelon"), MB_ICONQUESTION | MB_OK);
 
-				if( (iRowA != 0) && (iRowB != 0))
-				{
-					GaussianSwap(hDlg, iRowA, iRowB);
-				}
-				else
-				{
-					MessageBox(hDlg, TEXT("Error\n Incorrect Row choice in  Swap Row \n please enter Number from 1 to 3"), TEXT("Error"),MB_ICONQUESTION | MB_OK) ;
 				}
 				break;
 			}
-		case IDC_APPPLY_ADD:
+		case IDC_APPLY_SWAP:
 			{
-				int iRowA = 0;
-				int iRowB = 0;
-				if( (GetDlgItemInt(hDlg,IDC_ADD_ROW_A,0,1) <= 3) &&
-					(GetDlgItemInt(hDlg,IDC_ADD_ROW_A,0,1) >= 1) &&
-					(GetDlgItemInt(hDlg,IDC_ADD_ROW_B,0,1) <= 3) &&
-					(GetDlgItemInt(hDlg,IDC_ADD_ROW_B,0,1) >= 1))
-
+				if (RowInputCheck(hDlg, 2))
 				{
-					iRowA = (GetDlgItemInt(hDlg,IDC_ADD_ROW_A,0,1));
-					iRowB = (GetDlgItemInt(hDlg,IDC_ADD_ROW_B,0,1));
+					GaussianSwap(hDlg);
 				}
+				if (EchelonCheck(hDlg))
+				{
+					MessageBox(hDlg, TEXT("Row Echelon"), TEXT("Row Echelon"), MB_ICONQUESTION | MB_OK);
 
-				if( (iRowA != 0) && (iRowB != 0))
-				{
-					//GaussianAdd();
-				}
-				else
-				{
-					MessageBox(hDlg, TEXT("Error\n Incorrect Row choice in ADD \n please enter Number from 1 to 3"), TEXT("Error"),MB_ICONQUESTION | MB_OK) ;
 				}
 				break;
 			}
-	    }
+		case IDC_APPLY_ADD:
+			{
+				if (RowInputCheck(hDlg, 3))
+				{
+					GaussianAdd(hDlg);
+				}
+				if (EchelonCheck(hDlg))
+				{
+					MessageBox(hDlg, TEXT("Row Echelon"), TEXT("Row Echelon"), MB_ICONQUESTION | MB_OK);
+
+				}
+				break;
+			}
+		case IDC_APPLY_ALL:
+			{
+				if( (RowInputCheck(hDlg, 1)) &&
+					(RowInputCheck(hDlg, 2)) &&
+					(RowInputCheck(hDlg, 3)) )
+				{
+					GaussianMultiply(hDlg);
+					GaussianSwap(hDlg);
+					GaussianAdd(hDlg);
+				}
+				if (EchelonCheck(hDlg))
+				{
+					MessageBox(hDlg, TEXT("Row Echelon"), TEXT("Row Echelon"), MB_ICONQUESTION | MB_OK);
+
+				}
+				break;
+			}
+		}
 		break;
-
 	case WM_CLOSE:
-    if(MessageBox(hDlg, TEXT("Close the program?"), TEXT("Close"),
-                            MB_ICONQUESTION | MB_YESNO) == IDYES)
 		{
-			DestroyWindow(hDlg);
-	    }
-		
-	return TRUE;
+			if (MessageBox(hDlg, TEXT("Close the program?"), TEXT("Close"),
+				MB_ICONQUESTION | MB_YESNO) == IDYES)
+			{
+				DestroyWindow(hDlg);
+			}
 
+			return TRUE;
+		}
+		break;
 	case WM_DESTROY:
 		{
 			PostQuitMessage(0);
@@ -131,6 +124,7 @@ int WINAPI WinMain(HINSTANCE hInst, HINSTANCE h0, LPSTR lpCmdLine, int nCmdShow)
 			TranslateMessage(&msg);
 			DispatchMessage(&msg);
 		}
+		
 	}
 
 	return 0;
