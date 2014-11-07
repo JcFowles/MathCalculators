@@ -84,10 +84,12 @@ BOOL CALLBACK DialogProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam)
 			}
 		case IDC_T_A:
 			{
+				ScalarMultiply(hDlg, A);
 				break;
 			}
 		case IDC_T_B:
 			{
+				ScalarMultiply(hDlg, B);
 				break;
 			}
 	    }

@@ -385,11 +385,75 @@ bool Sub(HWND _hDlg, int _iChoice)
 
 }
 
-bool MultiplyQuaternion(HWND _hDlg, int _iChoice);
+/***********************
+* MultiplyQuaternion: Multiplies two quaternions together
+* @author: Jc Fowles
+* @parameter: _hDlg: handle to the dialog box
+* @parameter: _iChoice: int value: 1 is A * B and 2 is B * A
+* @return: bool: return true, if no errors exist
+********************/
+bool MultiplyQuaternion(HWND _hDlg, int _iChoice)
+{
+	return true;
+}
 
+/***********************
+* ScalarMultiply: Multiplies a quaternions with a scalar
+* @author: Jc Fowles
+* @parameter: _hDlg: handle to the dialog box
+* @parameter: _iChoice: int value: 1 is quaternion A and 2 is quaternion B 
+* @return: bool: return true, if no errors exist
+********************/
 bool ScalarMultiply(HWND _hDlg, int _iChoice)
 {
 	//The two queternion vectors
 	vector<float>* pfQuatA = new vector<float>;
 	vector<float>* pfQuatB = new vector<float>;
+
+	//The scalar t
+	float* pfScalar = new float;
+
+	//The resultant quaternion
+	vector<float>* pfResult =  new vector<float>;
+
+	//gets the Quaternions
+	if(GetQuaternion(_hDlg, pfQuatA, pfQuatB) && GetScalar(_hDlg, pfScalar))
+	{
+		
+		//Subtracts one quaternion from another
+		for(int i = 0; i < 4; i++)
+		{
+			if(_iChoice == 1)
+			{
+				(*pfResult).push_back( (*pfScalar) * (*pfQuatA)[i] );
+			}
+			else if(_iChoice == 2)
+			{
+				(*pfResult).push_back( (*pfScalar) * (*pfQuatB)[i] );
+			}
+		}
+
+		//Sets the Result into the text box
+		setResult(_hDlg, pfResult);
+	}
+	else //could not create the Quaternion because invalid input was found
+	{
+
+		MessageBox(_hDlg, TEXT("Invalid Input Found in Quaternions"), TEXT("ERROR"), MB_ICONSTOP | MB_OK);
+		return false;
+	}
+
+	//deletes Quaternions no longer required
+	delete pfQuatA;
+	pfQuatA = 0;
+	delete pfQuatB;
+	pfQuatB = 0;
+	delete pfScalar;
+	pfScalar = 0;
+
+	return (true);
+
 }
+
+
+//need to inisialise the quaternions to 0 
