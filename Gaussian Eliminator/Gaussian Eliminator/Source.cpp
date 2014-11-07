@@ -1,20 +1,37 @@
+/*
+* Bachelor of Software Engineering 
+* Media Design School 
+* Auckland 
+* New Zealand 
+ 
+* (c) 2005 - 2014 Media Design School 
+ 
+* File Name : Source.cpp
+* Description : Implementaion file for the source application. program starts here
+* Author :	Jc Fowles
+* Mail :	Jc.Fowles@mediadesign.school.nz	
+*/
+
+//local includes
 #include "Source.h"
 
-
-
+/***********************
+* DialogProc: Process the Dialog Box 
+* @author: Jc Fowles
+* @Parameter: hWnd: Handle to the Window sending the message
+* @Parameter: uMsg: The message ID being sent
+* @Parameter: wParam: Additional detail about the message being sent
+* @Parameter: lParam: Additional detail about the message being sent
+* @return: BOOL: result as a boolean
+********************/
 BOOL CALLBACK DialogProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
-
 	switch(uMsg)
 	{
 	case WM_COMMAND:
+		//buttons
 	    switch(LOWORD(wParam))
 	    {
-		case IDCANCEL:
-			{
-				SendMessage(hDlg, WM_CLOSE, 0, 0);
-				return TRUE;
-			}
 		case IDC_RANDOM:
 			{
 				RandomInitialise(hDlg);
@@ -28,7 +45,7 @@ BOOL CALLBACK DialogProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam)
 				}
 				if (EchelonCheck(hDlg))
 				{
-					if(ReDucedEchelonCheck(hDlg))
+					if(ReducedEchelonCheck(hDlg))
 					{
 						MessageBox(hDlg, TEXT("Reduced Row Echelon"), TEXT("Reduced Row Echelon"), MB_ICONEXCLAMATION | MB_OK);
 					}
@@ -48,7 +65,7 @@ BOOL CALLBACK DialogProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam)
 				}
 				if (EchelonCheck(hDlg))
 				{
-					if(ReDucedEchelonCheck(hDlg))
+					if(ReducedEchelonCheck(hDlg))
 					{
 						MessageBox(hDlg, TEXT("Reduced Row Echelon"), TEXT("Reduced Row Echelon"), MB_ICONEXCLAMATION | MB_OK);
 					}
@@ -68,7 +85,7 @@ BOOL CALLBACK DialogProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam)
 				}
 				if (EchelonCheck(hDlg))
 				{
-					if(ReDucedEchelonCheck(hDlg))
+					if(ReducedEchelonCheck(hDlg))
 					{
 						MessageBox(hDlg, TEXT("Reduced Row Echelon"), TEXT("Reduced Row Echelon"), MB_ICONEXCLAMATION | MB_OK);
 					}
@@ -96,7 +113,7 @@ BOOL CALLBACK DialogProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam)
 				}
 				if (EchelonCheck(hDlg))
 				{
-					if(ReDucedEchelonCheck(hDlg))
+					if(ReducedEchelonCheck(hDlg))
 					{
 						MessageBox(hDlg, TEXT("Reduced Row Echelon"), TEXT("Reduced Row Echelon"), MB_ICONEXCLAMATION | MB_OK);
 					}
@@ -110,8 +127,10 @@ BOOL CALLBACK DialogProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam)
 			}
 		}
 		break;
+		// closing the window
 	case WM_CLOSE:
 		{
+			//check if you are sure you want to close
 			if (MessageBox(hDlg, TEXT("Close the program?"), TEXT("Close"),
 				MB_ICONQUESTION | MB_YESNO) == IDYES)
 			{
@@ -132,6 +151,15 @@ BOOL CALLBACK DialogProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam)
 	return FALSE;
 }
 
+/***********************
+* WinMain: Program starts here 
+* @author: Jc Fowles
+* @Parameter: _hInstance: Instance handle that Windows generates for your application
+* @Parameter: _hPrevInstance: Tracker for the previous instance for the application
+* @Parameter: _lpCmdline: Wide char string that contains the passed in arguments 
+* @Parameter: _iCmdshow: Integer passed in during launch, indicating how the application window is opened
+* @return: int: Program ends here
+********************/
 int WINAPI WinMain(HINSTANCE hInst, HINSTANCE h0, LPSTR lpCmdLine, int nCmdShow)
 {
 	HWND hDlg;

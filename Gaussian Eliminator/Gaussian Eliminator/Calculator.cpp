@@ -1,6 +1,153 @@
+/*
+* Bachelor of Software Engineering 
+* Media Design School 
+* Auckland 
+* New Zealand 
+ 
+* (c) 2005 - 2014 Media Design School 
+ 
+* File Name : Calculator.cpp
+* Description : Implementaion for all the calculations and checks used in the calculator
+* Author :	Jc Fowles
+* Mail :	Jc.Fowles@mediadesign.school.nz	
+*/
 
+//local include
 #include "Source.h"
 
+/***********************
+* GaussianMultiply: Multiply each element in a given row by a given scalar value 
+* @author: Jc Fowles
+* @parameter: _hDlg: Handle to the dialog box
+* @return: bool: true if no error errors exist, else pop up the error to be fixed via message box
+********************/
+bool GaussianMultiply(HWND _hDlg)
+{
+	//gets the Row to multiply
+	int iRow = (GetDlgItemInt(_hDlg, IDC_MULTIPLY_ROW_NUM, 0, 1));
+	iRow = iRow - 1; // - minus 1 for index shift
+	
+	//gets the scalar to multiply the row by
+	wchar_t wstrTemp[100];
+	GetDlgItemText(_hDlg, IDC_MULTIPLY_AMOUNT, wstrTemp, 100);
+	float fScalar = (WideStringToFloat(wstrTemp));
+
+	//create the matrix from given values 
+	vector<vector<float>*>* TheMatrix = new vector<vector<float>*>;
+	if(CreateMatrix(_hDlg, TheMatrix))
+	{
+
+		for (int i = 0; i < 4; i++)
+		//multiply each element in choosen row by the fScalar
+		{
+			((*(*TheMatrix)[iRow])[i]) = fScalar*((*(*TheMatrix)[iRow])[i]);
+		}
+
+		//set text boxes using the matrix
+		SetTextBox(_hDlg, TheMatrix);
+	}
+	else //could not create the matrix because invalid input was found
+	{
+
+		MessageBox(_hDlg, TEXT("Invalid Input Found in Matrix"), TEXT("ERROR"), MB_ICONSTOP | MB_OK);
+		return false;
+	}
+	return (true);
+	
+}
+
+/***********************
+* GaussianSwap: Swaps two given rows
+* @author: Jc Fowles
+* @parameter: _hDlg: Handle to the dialog box
+* @return: bool: true if no error errors exist, else pop up the error to be fixed via message box
+********************/
+bool GaussianSwap(HWND _hDlg)
+{
+	//gets the Rows to swap
+	int iRowA = (GetDlgItemInt(_hDlg, IDC_SWAP_ROW_A, 0, 1));
+	int iRowB = (GetDlgItemInt(_hDlg, IDC_SWAP_ROW_B, 0, 1));
+	// - minus 1 for index shift
+	iRowA = iRowA - 1;
+	iRowB = iRowB - 1;
+	
+	//create the matrix from given values 
+	vector<vector<float>*>* TheMatrix = new vector<vector<float>*>;
+	if(CreateMatrix(_hDlg, TheMatrix))
+	{
+
+		float fTemp;
+		for (int i = 0; i < 4; i++)
+		{
+			//swap the rows
+			fTemp = ((*(*TheMatrix)[iRowA])[i]);
+			((*(*TheMatrix)[iRowA])[i]) = ((*(*TheMatrix)[iRowB])[i]);
+			((*(*TheMatrix)[iRowB])[i]) = fTemp;
+		}
+
+		//set text boxes using the matrix
+		SetTextBox(_hDlg, TheMatrix);
+		
+	}
+	else //could not create the matrix because invalid input was found
+	{
+		MessageBox(_hDlg, TEXT("Invalid Input Found in Matrix"), TEXT("ERROR"), MB_ICONSTOP | MB_OK);
+		return false;
+	}
+	return (true);
+}
+
+/***********************
+* GaussianAdd: adds a multiple of the first given row to the second given row
+* @author: Jc Fowles
+* @parameter: _hDlg: Handle to the dialog box
+* @return: bool: true if no error errors exist, else pop up the error to be fixed via message box
+********************/
+bool GaussianAdd(HWND _hDlg)
+{
+	//gets the scalar to multiply by
+	wchar_t wstrTemp[100];
+	GetDlgItemText(_hDlg, IDC_ADD_AMOUNT, wstrTemp, 100);
+	float fScalar = (WideStringToFloat(wstrTemp));
+
+	//gets the rows to add 
+	int iRowA = (GetDlgItemInt(_hDlg, IDC_ADD_ROW_A, 0, 1));
+	int iRowB = (GetDlgItemInt(_hDlg, IDC_ADD_ROW_B, 0, 1));
+	iRowA = iRowA - 1;
+	iRowB = iRowB - 1;
+
+	//create the matrix from given values 
+	vector<vector<float>*>* TheMatrix = new vector<vector<float>*>;
+	if(CreateMatrix(_hDlg, TheMatrix))
+	{
+
+		for (int i = 0; i < 4; i++)
+		{
+			//adds a multipl of choosen row to the second row
+			((*(*TheMatrix)[iRowB])[i]) = fScalar*((*(*TheMatrix)[iRowA])[i]) + ((*(*TheMatrix)[iRowB])[i]);
+		}
+
+		//set text boxes using the matrix
+		SetTextBox(_hDlg, TheMatrix);
+	}
+	else //could not create the matrix because invalid input was found
+	{
+		MessageBox(_hDlg, TEXT("Invalid Input Found in Matrix"), TEXT("ERROR"), MB_ICONSTOP | MB_OK);
+		return false;
+	}
+
+	return (true);
+}
+
+
+
+
+/***********************
+* Initialise: Initialises all values in the dialog box to 0
+* @author: Jc Fowles
+* @parameter: _hDlg: Handle to the dialog box
+* @return: bool: true if no error errors exist, else pop up the error to be fixed via message box
+********************/
 bool Initialise(HWND _hDlg)
 {
 	string strTemp = FloatToString(0.0f);
@@ -32,6 +179,12 @@ bool Initialise(HWND _hDlg)
 	return (true);
 }
 
+/***********************
+* Initialise: Initialises all values in the matrix to a random value (atm Initialises to 1 instead)
+* @author: Jc Fowles
+* @parameter: _hDlg: Handle to the dialog box
+* @return: bool: true if no error errors exist, else pop up the error to be fixed via message box
+********************/
 bool RandomInitialise(HWND _hDlg)
 {
 	vector<vector<float>*>* TheMatrix = new vector<vector<float>*>;
@@ -45,7 +198,7 @@ bool RandomInitialise(HWND _hDlg)
 	{
 		for (int k = 0; k < 3; k++)
 		{
-			fRandom = 1.0f; //change this to a random number between 1.0 and 10.0
+			fRandom = 1.0f; //change this to a random number between 1.0 and 10.0 , atm just 1 lol
 			((*(*TheMatrix)[k])[i]) = fRandom;
 		}
 	}
@@ -56,6 +209,14 @@ bool RandomInitialise(HWND _hDlg)
 	return (true);
 }
 
+
+/***********************
+* CreateStrMatrix: creates a matrix, with the values in the form of strings
+* @author: Jc Fowles
+* @parameter: _hDlg: Handle to the dialog box
+* @parameter: strMatrix: pointer to the string matrix
+* @return: bool: always true
+********************/
 bool CreateStrMatrix(HWND _hDlg, vector<vector<string>*>* strMatrix)
 {
 	wchar_t wstrTempA[100];
@@ -120,29 +281,35 @@ bool CreateStrMatrix(HWND _hDlg, vector<vector<string>*>* strMatrix)
 	//clear the temp row
 	delete vpstrTemp;
 	vpstrTemp =0;
-
-
-	//update this
+		
 	return (true);
 
 }
 
+/***********************
+* CreateMatrix: creates a matrix, using the string matrix, and checking the input values are valid floats
+* @author: Jc Fowles
+* @parameter: _hDlg: Handle to the dialog box
+* @parameter: _fMatrix: pointer to the float matrix
+* @return: bool: true if all inputs are valid floats, false if invalid input found
+********************/
 bool CreateMatrix(HWND _hDlg, vector<vector<float>*>* _fMatrix)
 {
-	//wchar_t wstrTempA[100];
 	//temp matrix row
 	vector<float>* vpfTemp = new vector<float>;
 
+	//creates a string matrix
 	vector<vector<string>*>* strMatrix = new vector<vector<string>*>;
-	
 	CreateStrMatrix(_hDlg , strMatrix);
 
 	for(int iRow = 0; iRow < 3; iRow++)
 	{
 		for(int iColumn = 0; iColumn < 4; iColumn++)
 		{
+			//check if valid input
 			if (InputCheck(  (*(*strMatrix)[iRow])[iColumn]) )
 			{
+				//push valid float input into the temp row 
 				(*vpfTemp).push_back( (stof((*(*strMatrix)[iRow])[iColumn])));
 			}
 			else
@@ -154,26 +321,22 @@ bool CreateMatrix(HWND _hDlg, vector<vector<float>*>* _fMatrix)
 		
 		//add the temp row to the matrix
 		(*_fMatrix).push_back(vpfTemp);
-
+		
+		//clear the temp row
 		vpfTemp = new vector<float>;
-		///clear the temp row
 	}
 
 	return true;
 	
 }
 
-bool InputCheck(string &_str)
-{
-	istringstream iss(_str);
-    float f;
-    iss >> noskipws >> f; // noskipws considers leading whitespace invalid
-    // Check the entire string was consumed and if either failbit or badbit is set
-    return iss.eof() && !iss.fail(); 
-}
-
-
-
+/***********************
+* SetTextBox: using the float matrix sets teh matrix textBoxes to corresponding values
+* @author: Jc Fowles
+* @parameter: _hDlg: Handle to the dialog box
+* @parameter: _fMatrix: pointer to the float matrix
+* @return: bool: always true
+********************/
 bool SetTextBox(HWND _hDlg, vector<vector<float>*>* _fMatrix)
 {
 	string strTemp;
@@ -211,75 +374,66 @@ bool SetTextBox(HWND _hDlg, vector<vector<float>*>* _fMatrix)
 	return (true);
 }
 
-string FloatToString(const float _kfValue)
+
+/***********************
+* InputCheck: Checks if a passed in sting is a valid float
+* @author: Jc Fowles
+* @parameter: _str: refrence to the string to checked
+* @return: bool: true of a valid float false if not a valid float
+********************/
+bool InputCheck(string &_str)
 {
-	stringstream strStream;
+	istringstream iss(_str);
+
+    float fFloat;
+
+	//Using noskipws, concat iss into fFloat
+    iss >> noskipws >> fFloat; 
 	
-	strStream << _kfValue;
-
-	string strConverted = strStream.str();
-	return strConverted;
-}
-
-float WideStringToFloat(const wchar_t* _kpwstr)
-{
-	size_t stringLength = wcslen(_kpwstr) + 1;
-	size_t convertedChars = 0;
-
-	if(stringLength ==1) // string is empty
+	// Then check if the concat was successful
+	// by checking the state of iss (That it does not have a fail bit or bad bit)
+	// and checking to see if we reached the End-of-File of iss 
+	if(iss.eof() && !iss.fail())
 	{
-		return (0);
+		return (true);
 	}
-
-	char* pStr = new char[stringLength*2];
-
-
-	wcstombs_s(&convertedChars, pStr, stringLength, _kpwstr, _TRUNCATE);
-
-	return (stof(pStr));
-}
-
-string WideStringToString(const wchar_t* _kpwstr)
-{
-	size_t stringLength = wcslen(_kpwstr) + 1;
-	size_t convertedChars = 0;
-
-	if(stringLength ==1) // string is empty
+	else
 	{
-		return (0);
+		return (false);
 	}
-
-	char* pStr = new char[stringLength*2];
-
-
-	wcstombs_s(&convertedChars, pStr, stringLength, _kpwstr, _TRUNCATE);
-	
-	return pStr;
+   
 }
 
-
-
-
+/***********************
+* RowInputCheck: Checks if the choosen rows are an int from 1 to 3, if not throw up a message box
+* @author: Jc Fowles
+* @parameter: _hDlg: Handle to the dialog box
+* @parameter: _iChoice: which button was pressed, first secod or 3rd
+* @return: bool: true if valid, false if not
+********************/
 bool RowInputCheck(HWND _hDlg, int _iChoice)
 {
+	//the scalar temp as a wstr
 	wchar_t wstrTemp[100];
-	GetDlgItemText(_hDlg, IDC_MULTIPLY_AMOUNT, wstrTemp, 100);
-	
-	
+		
+	//Temp value to check on at the end
 	int iRowA = 0;
 	int iRowB = 0;
 
-	switch (_iChoice)
+	switch (_iChoice)  //which button was choosen
 	{
-		case 3:
+		case 3:		// if button APLLY_ADD was selected
 		{
+			//check if row choices are valid between 1 and 3
 			if ((GetDlgItemInt(_hDlg, IDC_ADD_ROW_A, 0, 1) <= 3) &&
 				(GetDlgItemInt(_hDlg, IDC_ADD_ROW_A, 0, 1) >= 1) &&
 				(GetDlgItemInt(_hDlg, IDC_ADD_ROW_B, 0, 1) <= 3) &&
 				(GetDlgItemInt(_hDlg, IDC_ADD_ROW_B, 0, 1) >= 1))
 
 			{
+				//get the scalar
 				GetDlgItemText(_hDlg, IDC_ADD_AMOUNT, wstrTemp, 100);
+				//checks if scalar a valid float
 				if(InputCheck(WideStringToString(wstrTemp)))
 				{
 					iRowA = (GetDlgItemInt(_hDlg, IDC_ADD_ROW_A, 0, 1));
@@ -287,14 +441,16 @@ bool RowInputCheck(HWND _hDlg, int _iChoice)
 				}
 				else
 				{
+					//if scalar not a valid float
 					MessageBox(_hDlg, TEXT("Error\n Invalid Amount entered can not multiply by non float"), TEXT("Error"), MB_ICONERROR | MB_OK);
 					return false;
 				}
 			}
 		}
 			break;
-		case 2:
+		case 2:		// if button APLLY_SWAP was selected
 		{
+			//check if row choices are valid between 1 and 3
 			if ((GetDlgItemInt(_hDlg, IDC_SWAP_ROW_A, 0, 1) <= 3) &&
 				(GetDlgItemInt(_hDlg, IDC_SWAP_ROW_A, 0, 1) >= 1) &&
 				(GetDlgItemInt(_hDlg, IDC_SWAP_ROW_B, 0, 1) <= 3) &&
@@ -306,15 +462,16 @@ bool RowInputCheck(HWND _hDlg, int _iChoice)
 			}
 		}
 			break;
-		case 1:
+		case 1:		// if button APLLY_MULTIPLY was selected
 		{
-		
-
+			//check if row choices are valid between 1 and 3
 			if ((GetDlgItemInt(_hDlg, IDC_MULTIPLY_ROW_NUM, 0, 1) <= 3) &&
 				(GetDlgItemInt(_hDlg, IDC_MULTIPLY_ROW_NUM, 0, 1) >= 1)
 				)
 			{
+				//get the scalar
 				GetDlgItemText(_hDlg, IDC_MULTIPLY_AMOUNT, wstrTemp, 100);
+				//checks if scalar a valid float
 				if(InputCheck(WideStringToString(wstrTemp)))
 				{
 					iRowA = (GetDlgItemInt(_hDlg, IDC_MULTIPLY_ROW_NUM, 0, 1));
@@ -322,6 +479,7 @@ bool RowInputCheck(HWND _hDlg, int _iChoice)
 				}
 				else
 				{
+					//if scalar not a valid float
 					MessageBox(_hDlg, TEXT("Error\n Invalid Amount entered can not multiply by non float"), TEXT("Error"), MB_ICONERROR | MB_OK);
 					return false;
 				}
@@ -330,11 +488,13 @@ bool RowInputCheck(HWND _hDlg, int _iChoice)
 			break;
 	}
 
+	
 	if ((iRowA != 0) && (iRowB != 0))
 	{
+		//values were changed sweet continue as normal
 		return true;
 	}
-	else
+	else //if row temps unchanged incorrect row was inputed, throw up an error messsage box
 	{
 		MessageBox(_hDlg, TEXT("Error\n Incorrect Row Input \n Please enter a row choice from 1 to 3 only"), TEXT("Error"), MB_ICONERROR | MB_OK);
 		return false;
@@ -342,6 +502,95 @@ bool RowInputCheck(HWND _hDlg, int _iChoice)
 
 }
 
+/***********************
+* FloatToString: converts a passed in float to a string
+* @author: Jc Fowles
+* @parameter: _kfValue: float to convert
+* @return: string: the float in string form
+********************/
+string FloatToString(const float _kfValue)
+{
+	stringstream strStream;
+	
+	//concats the float into the string stream
+	strStream << _kfValue;
+
+	//convert the string stream to a string
+	string strConverted = strStream.str();
+	
+	//return the converted string
+	return strConverted;
+}
+
+/***********************
+* WideStringToFloat: converts a passed in WideString To a Float
+* @author: Jc Fowles
+* @parameter: _kpwstr: WideString to convert
+* @return: float: the WideString in float form
+********************/
+float WideStringToFloat(const wchar_t* _kpwstr)
+{
+	//gets the string length of the passed in float, plus the null teminator
+	size_t stringLength = wcslen(_kpwstr) + 1;
+	
+	//sets the converted length to 0 
+	size_t convertedChars = 0;
+
+	// if the string is empty return 0
+	if(stringLength == 1) 
+	{
+		return (0);
+	}
+
+	//A wide char can be 1 or 2 bytes there for we double the array size as a protection
+	char* pStr = new char[stringLength*2];
+
+	//wide_character_string_to_multi_byte_string stable convertion
+	//convert _kpwstr into pStr
+	wcstombs_s(&convertedChars, pStr, stringLength, _kpwstr, _TRUNCATE);
+
+	//convert to string to float using string_to_float
+	return (stof(pStr));
+}
+
+/***********************
+* WideStringToString: converts a passed in WideString To a string
+* @author: Jc Fowles
+* @parameter: _kpwstr: WideString to convert
+* @return: string: the WideString in string form
+********************/
+string WideStringToString(const wchar_t* _kpwstr)
+{
+	//gets the string length of the passed in float, plus the null teminator
+	size_t stringLength = wcslen(_kpwstr) + 1;
+	
+	//sets the converted length to 0 
+	size_t convertedChars = 0;
+
+	// if the string is empty return 0
+	if(stringLength == 1) 
+	{
+		return (0);
+	}
+
+	//A wide char can be 1 or 2 bytes there for we double the array size as a protection
+	char* pStr = new char[stringLength*2];
+
+	//wide_character_string_to_multi_byte_string stable convertion
+	//convert _kpwstr into pStr
+	wcstombs_s(&convertedChars, pStr, stringLength, _kpwstr, _TRUNCATE);
+	
+	return pStr;
+}
+
+
+
+/***********************
+* EchelonCheck: Checks to see if matrix in in row echelon form
+* @author: Jc Fowles
+* @parameter: _hDlg: Handle to the dialog box
+* @return: bool: true if in row echelon, false if not
+********************/
 bool EchelonCheck(HWND _hDlg)
 {
 
@@ -406,7 +655,13 @@ bool EchelonCheck(HWND _hDlg)
 	return false;
 }
 
-bool ReDucedEchelonCheck(HWND _hDlg)
+/***********************
+* ReducedEchelonCheck: Checks to see if matrix in in reduced row echelon form
+* @author: Jc Fowles
+* @parameter: _hDlg: Handle to the dialog box
+* @return: bool: true if in reduced row echelon, false if not
+********************/
+bool ReducedEchelonCheck(HWND _hDlg)
 {
 
 	vector<vector<float>*>* TheMatrix = new vector<vector<float>*>;
@@ -478,99 +733,5 @@ bool ReDucedEchelonCheck(HWND _hDlg)
 	return false;
 }
 
-bool GaussianSwap(HWND _hDlg)
-{
-	int iRowA = (GetDlgItemInt(_hDlg, IDC_SWAP_ROW_A, 0, 1));
-	int iRowB = (GetDlgItemInt(_hDlg, IDC_SWAP_ROW_B, 0, 1));
-	iRowA = iRowA - 1;
-	iRowB = iRowB - 1;
-	vector<vector<float>*>* TheMatrix = new vector<vector<float>*>;
 
-	//create the matrix from given values 
-	if(CreateMatrix(_hDlg, TheMatrix))
-	{
 
-		float fTemp;
-		for (int i = 0; i < 4; i++)
-		{
-			fTemp = ((*(*TheMatrix)[iRowA])[i]);
-			((*(*TheMatrix)[iRowA])[i]) = ((*(*TheMatrix)[iRowB])[i]);
-			((*(*TheMatrix)[iRowB])[i]) = fTemp;
-		}
-
-		//set text boxes using the matrix
-		SetTextBox(_hDlg, TheMatrix);
-		
-	}
-	else
-	{
-		MessageBox(_hDlg, TEXT("Invalid Input Found in Matrix"), TEXT("ERROR"), MB_ICONSTOP | MB_OK);
-		return false;
-	}
-	return (true);
-}
-
-bool GaussianMultiply(HWND _hDlg)
-{
-	wchar_t wstrTemp[100];
-	vector<vector<float>*>* TheMatrix = new vector<vector<float>*>;
-
-	int iRow = (GetDlgItemInt(_hDlg, IDC_MULTIPLY_ROW_NUM, 0, 1));
-	iRow = iRow - 1;
-	
-	GetDlgItemText(_hDlg, IDC_MULTIPLY_AMOUNT, wstrTemp, 100);
-	float fScalar = (WideStringToFloat(wstrTemp));
-
-	//create the matrix from given values 
-	if(CreateMatrix(_hDlg, TheMatrix))
-	{
-
-		for (int i = 0; i < 4; i++)
-		{
-			((*(*TheMatrix)[iRow])[i]) = fScalar*((*(*TheMatrix)[iRow])[i]);
-		}
-
-		//set text boxes using the matrix
-		SetTextBox(_hDlg, TheMatrix);
-	}
-	else
-	{
-		MessageBox(_hDlg, TEXT("Invalid Input Found in Matrix"), TEXT("ERROR"), MB_ICONSTOP | MB_OK);
-		return false;
-	}
-	return (true);
-	
-}
-
-bool GaussianAdd(HWND _hDlg)
-{
-	wchar_t wstrTemp[100];
-	GetDlgItemText(_hDlg, IDC_ADD_AMOUNT, wstrTemp, 100);
-	float fScalar = (WideStringToFloat(wstrTemp));
-
-	int iRowA = (GetDlgItemInt(_hDlg, IDC_ADD_ROW_A, 0, 1));
-	int iRowB = (GetDlgItemInt(_hDlg, IDC_ADD_ROW_B, 0, 1));
-	iRowA = iRowA - 1;
-	iRowB = iRowB - 1;
-	vector<vector<float>*>* TheMatrix = new vector<vector<float>*>;
-
-	//create the matrix from given values 
-	if(CreateMatrix(_hDlg, TheMatrix))
-	{
-
-		for (int i = 0; i < 4; i++)
-		{
-			((*(*TheMatrix)[iRowB])[i]) = fScalar*((*(*TheMatrix)[iRowA])[i]) + ((*(*TheMatrix)[iRowB])[i]);
-		}
-
-		//set text boxes using the matrix
-		SetTextBox(_hDlg, TheMatrix);
-	}
-	else
-	{
-		MessageBox(_hDlg, TEXT("Invalid Input Found in Matrix"), TEXT("ERROR"), MB_ICONSTOP | MB_OK);
-		return false;
-	}
-
-	return (true);
-}
