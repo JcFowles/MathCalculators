@@ -14,6 +14,10 @@
 
 #pragma once
 
+//define A then B or B then A
+const int A = 1; //if qauternion A will be the (first) quaternion in the equation  
+const int B = 2; //if qauternion B will be the (first) quaternion in the equation  
+
 //librarty includes 
 #include <iostream>
 #include <string>
@@ -39,20 +43,19 @@ string FloatToString(const float _kfValue);
 float WideStringToFloat(const wchar_t* _kpwstr);
 string WideStringToString(const wchar_t* _kpwstr);
 
-//Create Row from text box
-bool createRowStr(HWND _hDlg, vector<string>* _pStrRow );
-bool createRow(HWND _hDlg, vector<float>* _pRow );
+//get the values
+bool GetQuaternionStr(HWND _hDlg, vector<string>* _pStrQuatA, vector<string>* _pStrQuatB);
+bool GetQuaternion(HWND _hDlg, vector<float>* _pfQuatA, vector<float>* _pfQuatB);
+bool GetScalar(HWND _hDlg, float* _pfScalarA);
 
 //Set text Boxes
-bool setResultQuaternion(HWND _hDlg, vector<float>* _pRow);
-bool setResultScalar(HWND _hDlg, float _fResult);
+bool setResult(HWND _hDlg, vector<float>* _pResultQuat);
+bool setResult(HWND _hDlg, float _fResult);
 
 bool Add(HWND _hDlg);
 
-bool SubA(HWND _hDlg);
-bool SubB(HWND _hDlg);
 bool Sub(HWND _hDlg, int _iChoice);
-bool Subtract(vector<float>* _pRowOne, vector<float>* _pRowTwo );
+
 
 
 bool MultiplyQuaternionAB(HWND _hDlg);

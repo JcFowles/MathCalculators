@@ -124,3 +124,272 @@ string WideStringToString(const wchar_t* _kpwstr)
 	
 	return pStr;
 }
+
+/***********************
+* GetQuaternionStr: Gets the values from the quaternion dialog boxes and stores it into a vector
+* @author: Jc Fowles
+* @parameter: _hDlg: handle to the dialog box
+* @parameter: _pStrQuatA: a pointer to a vector in which the values are to be stored for quaternion A
+* @parameter: _pStrQuatB: a pointer to a vector in which the values are to be stored for quaternion B
+* @return: bool: return true
+********************/
+bool GetQuaternionStr(HWND _hDlg, vector<string>* _pStrQuatA, vector<string>* _pStrQuatB)
+{
+	//temp stringh to store the value in the dialog box
+	wchar_t wstrTempA[100];
+			
+	//Quaternion A
+	GetDlgItemText(_hDlg, IDC_A_I, wstrTempA, 100);
+	(*_pStrQuatA).push_back((WideStringToString(wstrTempA)));		
+
+	GetDlgItemText(_hDlg, IDC_A_J, wstrTempA, 100);
+	(*_pStrQuatA).push_back((WideStringToString(wstrTempA)));
+
+	GetDlgItemText(_hDlg, IDC_A_K, wstrTempA, 100);
+	(*_pStrQuatA).push_back((WideStringToString(wstrTempA)));
+
+	GetDlgItemText(_hDlg, IDC_A, wstrTempA, 100);
+	(*_pStrQuatA).push_back((WideStringToString(wstrTempA)));
+
+
+	//Quaternion B
+	GetDlgItemText(_hDlg, IDC_B_I, wstrTempA, 100);
+	(*_pStrQuatB).push_back((WideStringToString(wstrTempA)));		
+
+	GetDlgItemText(_hDlg, IDC_B_J, wstrTempA, 100);
+	(*_pStrQuatB).push_back((WideStringToString(wstrTempA)));
+
+	GetDlgItemText(_hDlg, IDC_B_K, wstrTempA, 100);
+	(*_pStrQuatB).push_back((WideStringToString(wstrTempA)));
+
+	GetDlgItemText(_hDlg, IDC_B, wstrTempA, 100);
+	(*_pStrQuatB).push_back((WideStringToString(wstrTempA)));
+
+	return (true);
+
+}
+
+/***********************
+* GetQuaternion: Gets and convert data from the quaternion dialog boxes into two float vectors
+* @author: Jc Fowles
+* @parameter: _hDlg: handle to the dialog box
+* @parameter: _pfQuatA: a pointer to a vector in which the values are to be stored for quaternion A
+* @parameter: _pfQuatB: a pointer to a vector in which the values are to be stored for quaternion B
+* @return: bool: return true, if no errors exist
+********************/
+bool GetQuaternion(HWND _hDlg, vector<float>* _pfQuatA, vector<float>* _pfQuatB)
+{
+	//String Pointer to store the string values of the quaternions
+	vector<string>* pStrTempQuatA = new vector<string>;
+	vector<string>* pStrTempQuatB = new vector<string>;
+
+	GetQuaternionStr(_hDlg, pStrTempQuatA, pStrTempQuatB);
+
+	for(int i = 0; i < 4; i++)
+	{
+		//check if inputs are valid floats
+		if(InputCheck((*pStrTempQuatA)[i]) &&
+		   InputCheck((*pStrTempQuatB)[i]) )
+		{
+			//convert to flaots and push onto the float vector
+			(*_pfQuatA).push_back(stof((*pStrTempQuatA)[i]));
+			(*_pfQuatB).push_back(stof((*pStrTempQuatB)[i]));
+		}
+		else
+		{
+			//invalid input found
+			return false;
+		}
+	}
+
+	return (true);
+
+}
+
+/***********************
+* GetScalar: Gets and convert data from the scalar t dialog box
+* @author: Jc Fowles
+* @parameter: _hDlg: handle to the dialog box
+* @parameter: _pfQuatA: a pointer to a vector in which the values are to be stored for quaternion A
+* @parameter: _pfQuatB: a pointer to a vector in which the values are to be stored for quaternion B
+* @return: bool: return true, if no errors exist
+********************/
+bool GetScalar(HWND _hDlg, float* _fpScalar)
+{
+	//String Pointer to store the string values of the scalar
+	string strScalar;
+
+	//temp stringh to store the value in the dialog box
+	wchar_t wstrTempA[100];
+			
+	//Get the Scalar value
+	GetDlgItemText(_hDlg, IDC_T, wstrTempA, 100);
+	(strScalar) = (WideStringToString(wstrTempA));	
+
+	if(InputCheck(strScalar))
+	{
+		*_fpScalar = stof(strScalar);
+		return true;
+	}
+	else
+	{
+		return false;
+	}
+
+}
+
+/***********************
+* setResult: Sets the result, either in quaternion or scalar form dependant on passed in parameter
+* @author: Jc Fowles
+* @parameter: _hDlg: handle to the dialog box
+* @parameter: _pResultQuat: The Resultant queternion to be set into respective text box
+* @return: bool: return true
+********************/
+bool setResult(HWND _hDlg, vector<float>* _pResultQuat)
+{
+	string strTemp;
+
+	//set the result Quaternion text boxes
+	strTemp = FloatToString((*_pResultQuat)[0]);
+	SetDlgItemTextA(_hDlg, IDC_RESULT_I, strTemp.c_str());
+
+	strTemp = FloatToString((*_pResultQuat)[1]);
+	SetDlgItemTextA(_hDlg, IDC_RESULT_J, strTemp.c_str());
+
+	strTemp = FloatToString((*_pResultQuat)[2]);
+	SetDlgItemTextA(_hDlg, IDC_RESULT_K, strTemp.c_str());
+
+	strTemp = FloatToString((*_pResultQuat)[3]);
+	SetDlgItemTextA(_hDlg, IDC_RESULT, strTemp.c_str());
+
+	delete _pResultQuat;
+	_pResultQuat = 0;
+
+	return(true);
+}
+
+/***********************
+* setResult: Sets the result, either in quaternion or scalar form dependant on passed in parameter
+* @author: Jc Fowles
+* @parameter: _hDlg: handle to the dialog box
+* @parameter: _fResult: The Resultant scalar to be set into respective text box
+* @return: bool: return true
+********************/
+bool setResult(HWND _hDlg, float _fResult)
+{
+	string strTemp;
+
+	//set the result Scalar text boxes
+	strTemp = FloatToString(_fResult);
+	SetDlgItemTextA(_hDlg, IDC_SCALAR_RESULT, strTemp.c_str());
+
+	return (true);
+}
+
+
+/***********************
+* Add: Adds two quaternions together
+* @author: Jc Fowles
+* @parameter: _hDlg: handle to the dialog box
+* @return: bool: return true, if no errors exist
+********************/
+bool Add(HWND _hDlg)
+{
+	//The two queternion vectors
+	vector<float>* pfQuatA = new vector<float>;
+	vector<float>* pfQuatB = new vector<float>;
+	
+	//The resultant vector
+	vector<float>* pfResult = new vector<float>;
+
+	//gets the Quaternions
+	if(GetQuaternion(_hDlg, pfQuatA, pfQuatB))
+	{
+
+		//Adds the two quaternions together and pushes the result onto the resultant vector
+		for(int i = 0; i < 4; i++)
+		{
+			(*pfResult).push_back( (*pfQuatA)[i] + (*pfQuatB)[i] );
+		}
+
+		//Sets the Result into the text box
+		setResult(_hDlg, pfResult);
+	}
+	else //could not create the Quaternion because invalid input was found
+	{
+
+		MessageBox(_hDlg, TEXT("Invalid Input Found in Quaternions"), TEXT("ERROR"), MB_ICONSTOP | MB_OK);
+		return false;
+	}
+
+	//deletes Quaternions no longer required
+	delete pfQuatA;
+	pfQuatA = 0;
+	delete pfQuatB;
+	pfQuatB = 0;
+
+	return (true);
+
+}
+
+/***********************
+* Sub: Subtracts one quaternion from another, the order is dependant on the choice given
+* @author: Jc Fowles
+* @parameter: _hDlg: handle to the dialog box
+* @parameter: _iChoice: int value: 1 is A - B and 2 is B - A
+* @return: bool: return true, if no errors exist
+********************/
+bool Sub(HWND _hDlg, int _iChoice)
+{
+	//The two queternion vectors
+	vector<float>* pfQuatA = new vector<float>;
+	vector<float>* pfQuatB = new vector<float>;
+	
+	//The resultant vector
+	vector<float>* pfResult = new vector<float>;
+
+	//gets the Quaternions
+	if(GetQuaternion(_hDlg, pfQuatA, pfQuatB))
+	{
+		
+		//Subtracts one quaternion from another
+		for(int i = 0; i < 4; i++)
+		{
+			if(_iChoice == 1)
+			{
+				(*pfResult).push_back( (*pfQuatA)[i] - (*pfQuatB)[i] );
+			}
+			else if(_iChoice == 2)
+			{
+				(*pfResult).push_back( (*pfQuatB)[i] - (*pfQuatA)[i] );
+			}
+		}
+
+		//Sets the Result into the text box
+		setResult(_hDlg, pfResult);
+	}
+	else //could not create the Quaternion because invalid input was found
+	{
+
+		MessageBox(_hDlg, TEXT("Invalid Input Found in Quaternions"), TEXT("ERROR"), MB_ICONSTOP | MB_OK);
+		return false;
+	}
+
+	//deletes Quaternions no longer required
+	delete pfQuatA;
+	pfQuatA = 0;
+	delete pfQuatB;
+	pfQuatB = 0;
+
+	return (true);
+
+}
+
+bool MultiplyQuaternion(HWND _hDlg, int _iChoice);
+
+bool ScalarMultiply(HWND _hDlg, int _iChoice)
+{
+	//The two queternion vectors
+	vector<float>* pfQuatA = new vector<float>;
+	vector<float>* pfQuatB = new vector<float>;
+}

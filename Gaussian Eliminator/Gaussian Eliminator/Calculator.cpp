@@ -239,8 +239,10 @@ bool CreateStrMatrix(HWND _hDlg, vector<vector<string>*>* strMatrix)
 	//add the temp row to the matrix
 	(*strMatrix).push_back(vpstrTemp);
 
-	vpstrTemp = new vector<string>;
 	//clear the temp row
+	//delete vpstrTemp;
+	//vpstrTemp = 0;
+	vpstrTemp = new vector<string>;
 	
 	//Second row enter into the matrix
 	GetDlgItemText(_hDlg, IDC_MATRIX_10, wstrTempA, 100);
@@ -258,8 +260,10 @@ bool CreateStrMatrix(HWND _hDlg, vector<vector<string>*>* strMatrix)
 	//add the temp row to the matrix
 	(*strMatrix).push_back(vpstrTemp);
 
-	vpstrTemp = new vector<string>;
 	//clear the temp row
+	//delete vpstrTemp;
+	//vpstrTemp =0;
+	vpstrTemp = new vector<string>;
 
 	//Third row enter into the matrix
 	GetDlgItemText(_hDlg, IDC_MATRIX_20, wstrTempA, 100);
@@ -276,11 +280,12 @@ bool CreateStrMatrix(HWND _hDlg, vector<vector<string>*>* strMatrix)
 
 	//add the temp row to the matrix
 	(*strMatrix).push_back(vpstrTemp);
+	
+	//delete vpstrTemp, no longer required
+	//delete vpstrTemp;
+	//vpstrTemp =0;
+	
 
-	vpstrTemp = new vector<string>;
-	//clear the temp row
-	delete vpstrTemp;
-	vpstrTemp =0;
 		
 	return (true);
 
@@ -326,6 +331,10 @@ bool CreateMatrix(HWND _hDlg, vector<vector<float>*>* _fMatrix)
 		vpfTemp = new vector<float>;
 	}
 
+	//delete vpfTemp no longer required
+	//delete vpfTemp;
+	//vpfTemp = 0;
+
 	return true;
 	
 }
@@ -370,6 +379,10 @@ bool SetTextBox(HWND _hDlg, vector<vector<float>*>* _fMatrix)
 	SetDlgItemTextA(_hDlg, IDC_MATRIX_22, strTemp.c_str());
 	strTemp = FloatToString((*(*_fMatrix)[2])[3]);
 	SetDlgItemTextA(_hDlg, IDC_MATRIX_23, strTemp.c_str());
+
+	//delete the matrix no longer required
+	delete _fMatrix;
+	_fMatrix = 0;
 
 	return (true);
 }

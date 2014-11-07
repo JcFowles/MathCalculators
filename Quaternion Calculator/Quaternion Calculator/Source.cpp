@@ -33,14 +33,17 @@ BOOL CALLBACK DialogProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam)
 	    {
 		case IDC_A_PLUS_B:
 			{
+				Add(hDlg);
 				break;
 			}
 		case IDC_A_MIN_B:
 			{
+				Sub(hDlg, A);
 				break;
 			}
 		case IDC_B_MIN_A:
 			{
+				Sub(hDlg, B);
 				break;
 			}
 		case IDC_A_B:
