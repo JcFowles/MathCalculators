@@ -240,8 +240,6 @@ bool CreateStrMatrix(HWND _hDlg, vector<vector<string>*>* strMatrix)
 	(*strMatrix).push_back(vpstrTemp);
 
 	//clear the temp row
-	//delete vpstrTemp;
-	//vpstrTemp = 0;
 	vpstrTemp = new vector<string>;
 	
 	//Second row enter into the matrix
@@ -261,8 +259,6 @@ bool CreateStrMatrix(HWND _hDlg, vector<vector<string>*>* strMatrix)
 	(*strMatrix).push_back(vpstrTemp);
 
 	//clear the temp row
-	//delete vpstrTemp;
-	//vpstrTemp =0;
 	vpstrTemp = new vector<string>;
 
 	//Third row enter into the matrix
@@ -281,12 +277,7 @@ bool CreateStrMatrix(HWND _hDlg, vector<vector<string>*>* strMatrix)
 	//add the temp row to the matrix
 	(*strMatrix).push_back(vpstrTemp);
 	
-	//delete vpstrTemp, no longer required
-	//delete vpstrTemp;
-	//vpstrTemp =0;
-	
-
-		
+			
 	return (true);
 
 }
@@ -330,10 +321,6 @@ bool CreateMatrix(HWND _hDlg, vector<vector<float>*>* _fMatrix)
 		//clear the temp row
 		vpfTemp = new vector<float>;
 	}
-
-	//delete vpfTemp no longer required
-	//delete vpfTemp;
-	//vpfTemp = 0;
 
 	return true;
 	
