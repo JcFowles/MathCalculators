@@ -28,7 +28,14 @@ BOOL CALLBACK DialogProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam)
 				}
 				if (EchelonCheck(hDlg))
 				{
-					MessageBox(hDlg, TEXT("Row Echelon"), TEXT("Row Echelon"), MB_ICONQUESTION | MB_OK);
+					if(ReDucedEchelonCheck(hDlg))
+					{
+						MessageBox(hDlg, TEXT("Reduced Row Echelon"), TEXT("Reduced Row Echelon"), MB_ICONEXCLAMATION | MB_OK);
+					}
+					else
+					{
+						MessageBox(hDlg, TEXT("Row Echelon"), TEXT("Row Echelon"), MB_ICONEXCLAMATION | MB_OK);
+					}
 
 				}
 				break;
@@ -41,7 +48,14 @@ BOOL CALLBACK DialogProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam)
 				}
 				if (EchelonCheck(hDlg))
 				{
-					MessageBox(hDlg, TEXT("Row Echelon"), TEXT("Row Echelon"), MB_ICONQUESTION | MB_OK);
+					if(ReDucedEchelonCheck(hDlg))
+					{
+						MessageBox(hDlg, TEXT("Reduced Row Echelon"), TEXT("Reduced Row Echelon"), MB_ICONEXCLAMATION | MB_OK);
+					}
+					else
+					{
+						MessageBox(hDlg, TEXT("Row Echelon"), TEXT("Row Echelon"), MB_ICONEXCLAMATION | MB_OK);
+					}
 
 				}
 				break;
@@ -54,7 +68,14 @@ BOOL CALLBACK DialogProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam)
 				}
 				if (EchelonCheck(hDlg))
 				{
-					MessageBox(hDlg, TEXT("Row Echelon"), TEXT("Row Echelon"), MB_ICONQUESTION | MB_OK);
+					if(ReDucedEchelonCheck(hDlg))
+					{
+						MessageBox(hDlg, TEXT("Reduced Row Echelon"), TEXT("Reduced Row Echelon"), MB_ICONEXCLAMATION | MB_OK);
+					}
+					else
+					{
+						MessageBox(hDlg, TEXT("Row Echelon"), TEXT("Row Echelon"), MB_ICONEXCLAMATION | MB_OK);
+					}
 
 				}
 				break;
@@ -65,13 +86,24 @@ BOOL CALLBACK DialogProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam)
 					(RowInputCheck(hDlg, 2)) &&
 					(RowInputCheck(hDlg, 3)) )
 				{
-					GaussianMultiply(hDlg);
-					GaussianSwap(hDlg);
-					GaussianAdd(hDlg);
+					if(GaussianMultiply(hDlg))
+					{
+						if(GaussianSwap(hDlg))
+						{
+							GaussianAdd(hDlg);
+						}
+					}
 				}
 				if (EchelonCheck(hDlg))
 				{
-					MessageBox(hDlg, TEXT("Row Echelon"), TEXT("Row Echelon"), MB_ICONQUESTION | MB_OK);
+					if(ReDucedEchelonCheck(hDlg))
+					{
+						MessageBox(hDlg, TEXT("Reduced Row Echelon"), TEXT("Reduced Row Echelon"), MB_ICONEXCLAMATION | MB_OK);
+					}
+					else
+					{
+						MessageBox(hDlg, TEXT("Row Echelon"), TEXT("Row Echelon"), MB_ICONEXCLAMATION | MB_OK);
+					}
 
 				}
 				break;

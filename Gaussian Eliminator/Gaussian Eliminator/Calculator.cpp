@@ -56,82 +56,123 @@ bool RandomInitialise(HWND _hDlg)
 	return (true);
 }
 
-bool CreateMatrix(HWND _hDlg, vector<vector<float>*>* _fMatrix)
+bool CreateStrMatrix(HWND _hDlg, vector<vector<string>*>* strMatrix)
 {
 	wchar_t wstrTempA[100];
 	//temp matrix row
+	vector<string>* vpstrTemp = new vector<string>;
+		
+	//First row enter into the matrix
+	GetDlgItemText(_hDlg, IDC_MATRIX_00, wstrTempA, 100);
+	(*vpstrTemp).push_back((WideStringToString(wstrTempA)));		
+
+	GetDlgItemText(_hDlg, IDC_MATRIX_01, wstrTempA, 100);
+	(*vpstrTemp).push_back((WideStringToString(wstrTempA)));
+
+	GetDlgItemText(_hDlg, IDC_MATRIX_02, wstrTempA, 100);
+	(*vpstrTemp).push_back((WideStringToString(wstrTempA)));
+
+	GetDlgItemText(_hDlg, IDC_MATRIX_03, wstrTempA, 100);
+	(*vpstrTemp).push_back((WideStringToString(wstrTempA)));
+
+	//add the temp row to the matrix
+	(*strMatrix).push_back(vpstrTemp);
+
+	vpstrTemp = new vector<string>;
+	//clear the temp row
+	
+	//Second row enter into the matrix
+	GetDlgItemText(_hDlg, IDC_MATRIX_10, wstrTempA, 100);
+	(*vpstrTemp).push_back((WideStringToString(wstrTempA)));
+
+	GetDlgItemText(_hDlg, IDC_MATRIX_11, wstrTempA, 100);
+	(*vpstrTemp).push_back((WideStringToString(wstrTempA)));
+
+	GetDlgItemText(_hDlg, IDC_MATRIX_12, wstrTempA, 100);
+	(*vpstrTemp).push_back((WideStringToString(wstrTempA)));
+
+	GetDlgItemText(_hDlg, IDC_MATRIX_13, wstrTempA, 100);
+	(*vpstrTemp).push_back((WideStringToString(wstrTempA)));
+
+	//add the temp row to the matrix
+	(*strMatrix).push_back(vpstrTemp);
+
+	vpstrTemp = new vector<string>;
+	//clear the temp row
+
+	//Third row enter into the matrix
+	GetDlgItemText(_hDlg, IDC_MATRIX_20, wstrTempA, 100);
+	(*vpstrTemp).push_back((WideStringToString(wstrTempA)));
+
+	GetDlgItemText(_hDlg, IDC_MATRIX_21, wstrTempA, 100);
+	(*vpstrTemp).push_back((WideStringToString(wstrTempA)));
+
+	GetDlgItemText(_hDlg, IDC_MATRIX_22, wstrTempA, 100);
+	(*vpstrTemp).push_back((WideStringToString(wstrTempA)));
+
+	GetDlgItemText(_hDlg, IDC_MATRIX_23, wstrTempA, 100);
+	(*vpstrTemp).push_back((WideStringToString(wstrTempA)));
+
+	//add the temp row to the matrix
+	(*strMatrix).push_back(vpstrTemp);
+
+	vpstrTemp = new vector<string>;
+	//clear the temp row
+	delete vpstrTemp;
+	vpstrTemp =0;
+
+
+	//update this
+	return (true);
+
+}
+
+bool CreateMatrix(HWND _hDlg, vector<vector<float>*>* _fMatrix)
+{
+	//wchar_t wstrTempA[100];
+	//temp matrix row
 	vector<float>* vpfTemp = new vector<float>;
 
-	if (InputCheck(_hDlg))
-	{
-		//First row enter into the matrix
-		GetDlgItemText(_hDlg, IDC_MATRIX_00, wstrTempA, 100);
-
-		(*vpfTemp).push_back(WideStringToFloat(wstrTempA));		
-
-		GetDlgItemText(_hDlg, IDC_MATRIX_01, wstrTempA, 100);
-		(*vpfTemp).push_back(WideStringToFloat(wstrTempA));
-
-		GetDlgItemText(_hDlg, IDC_MATRIX_02, wstrTempA, 100);
-		(*vpfTemp).push_back(WideStringToFloat(wstrTempA));
-
-		GetDlgItemText(_hDlg, IDC_MATRIX_03, wstrTempA, 100);
-		(*vpfTemp).push_back(WideStringToFloat(wstrTempA));
-
-		//add the temp row to the matrix
-		(*_fMatrix).push_back(vpfTemp);
-
-		vpfTemp = new vector<float>;
-		//clear the temp row
+	vector<vector<string>*>* strMatrix = new vector<vector<string>*>;
 	
-		//Second row enter into the matrix
-		GetDlgItemText(_hDlg, IDC_MATRIX_10, wstrTempA, 100);
-		(*vpfTemp).push_back(WideStringToFloat(wstrTempA));
+	CreateStrMatrix(_hDlg , strMatrix);
 
-		GetDlgItemText(_hDlg, IDC_MATRIX_11, wstrTempA, 100);
-		(*vpfTemp).push_back(WideStringToFloat(wstrTempA));
-
-		GetDlgItemText(_hDlg, IDC_MATRIX_12, wstrTempA, 100);
-		(*vpfTemp).push_back(WideStringToFloat(wstrTempA));
-
-		GetDlgItemText(_hDlg, IDC_MATRIX_13, wstrTempA, 100);
-		(*vpfTemp).push_back(WideStringToFloat(wstrTempA));
-
-		//add the temp row to the matrix
-		(*_fMatrix).push_back(vpfTemp);
-
-		//clear the temp row
-		vpfTemp = new vector<float>;
-
-		//Third row enter into the matrix
-		GetDlgItemText(_hDlg, IDC_MATRIX_20, wstrTempA, 100);
-		(*vpfTemp).push_back(WideStringToFloat(wstrTempA));
-
-		GetDlgItemText(_hDlg, IDC_MATRIX_21, wstrTempA, 100);
-		(*vpfTemp).push_back(WideStringToFloat(wstrTempA));
-
-		GetDlgItemText(_hDlg, IDC_MATRIX_22, wstrTempA, 100);
-		(*vpfTemp).push_back(WideStringToFloat(wstrTempA));
-
-		GetDlgItemText(_hDlg, IDC_MATRIX_23, wstrTempA, 100);
-		(*vpfTemp).push_back(WideStringToFloat(wstrTempA));
-
-		//add the temp row to the matrix
-		(*_fMatrix).push_back(vpfTemp);
-
-		//clear the temp row
-		vpfTemp = new vector<float>;
-		
-
-		return (true);
-
-	}
-	else
+	for(int iRow = 0; iRow < 3; iRow++)
 	{
-		return (false);
+		for(int iColumn = 0; iColumn < 4; iColumn++)
+		{
+			if (InputCheck(  (*(*strMatrix)[iRow])[iColumn]) )
+			{
+				(*vpfTemp).push_back( (stof((*(*strMatrix)[iRow])[iColumn])));
+			}
+			else
+			{
+				//invalid input found
+				return false;
+			}
+		}
+		
+		//add the temp row to the matrix
+		(*_fMatrix).push_back(vpfTemp);
+
+		vpfTemp = new vector<float>;
+		///clear the temp row
 	}
-			
+
+	return true;
+	
 }
+
+bool InputCheck(string &_str)
+{
+	istringstream iss(_str);
+    float f;
+    iss >> noskipws >> f; // noskipws considers leading whitespace invalid
+    // Check the entire string was consumed and if either failbit or badbit is set
+    return iss.eof() && !iss.fail(); 
+}
+
+
 
 bool SetTextBox(HWND _hDlg, vector<vector<float>*>* _fMatrix)
 {
@@ -198,15 +239,33 @@ float WideStringToFloat(const wchar_t* _kpwstr)
 	return (stof(pStr));
 }
 
-bool InputCheck(HWND _hDlg)
+string WideStringToString(const wchar_t* _kpwstr)
 {
-	//update this
-	return (true);
+	size_t stringLength = wcslen(_kpwstr) + 1;
+	size_t convertedChars = 0;
+
+	if(stringLength ==1) // string is empty
+	{
+		return (0);
+	}
+
+	char* pStr = new char[stringLength*2];
+
+
+	wcstombs_s(&convertedChars, pStr, stringLength, _kpwstr, _TRUNCATE);
+	
+	return pStr;
 }
+
+
+
 
 bool RowInputCheck(HWND _hDlg, int _iChoice)
 {
-
+	wchar_t wstrTemp[100];
+	GetDlgItemText(_hDlg, IDC_MULTIPLY_AMOUNT, wstrTemp, 100);
+	
+	
 	int iRowA = 0;
 	int iRowB = 0;
 
@@ -220,8 +279,17 @@ bool RowInputCheck(HWND _hDlg, int _iChoice)
 				(GetDlgItemInt(_hDlg, IDC_ADD_ROW_B, 0, 1) >= 1))
 
 			{
-				iRowA = (GetDlgItemInt(_hDlg, IDC_ADD_ROW_A, 0, 1));
-				iRowB = (GetDlgItemInt(_hDlg, IDC_ADD_ROW_B, 0, 1));
+				GetDlgItemText(_hDlg, IDC_ADD_AMOUNT, wstrTemp, 100);
+				if(InputCheck(WideStringToString(wstrTemp)))
+				{
+					iRowA = (GetDlgItemInt(_hDlg, IDC_ADD_ROW_A, 0, 1));
+					iRowB = (GetDlgItemInt(_hDlg, IDC_ADD_ROW_B, 0, 1));
+				}
+				else
+				{
+					MessageBox(_hDlg, TEXT("Error\n Invalid Amount entered can not multiply by non float"), TEXT("Error"), MB_ICONERROR | MB_OK);
+					return false;
+				}
 			}
 		}
 			break;
@@ -246,8 +314,17 @@ bool RowInputCheck(HWND _hDlg, int _iChoice)
 				(GetDlgItemInt(_hDlg, IDC_MULTIPLY_ROW_NUM, 0, 1) >= 1)
 				)
 			{
-				iRowA = (GetDlgItemInt(_hDlg, IDC_MULTIPLY_ROW_NUM, 0, 1));
-				iRowB = (GetDlgItemInt(_hDlg, IDC_MULTIPLY_ROW_NUM, 0, 1));
+				GetDlgItemText(_hDlg, IDC_MULTIPLY_AMOUNT, wstrTemp, 100);
+				if(InputCheck(WideStringToString(wstrTemp)))
+				{
+					iRowA = (GetDlgItemInt(_hDlg, IDC_MULTIPLY_ROW_NUM, 0, 1));
+					iRowB = (GetDlgItemInt(_hDlg, IDC_MULTIPLY_ROW_NUM, 0, 1));
+				}
+				else
+				{
+					MessageBox(_hDlg, TEXT("Error\n Invalid Amount entered can not multiply by non float"), TEXT("Error"), MB_ICONERROR | MB_OK);
+					return false;
+				}
 			}
 		}
 			break;
@@ -259,12 +336,11 @@ bool RowInputCheck(HWND _hDlg, int _iChoice)
 	}
 	else
 	{
-		MessageBox(_hDlg, TEXT("Error\n Incorrect Row Input \n Please enter a row choice from 1 to 3 only"), TEXT("Error"), MB_ICONQUESTION | MB_OK);
+		MessageBox(_hDlg, TEXT("Error\n Incorrect Row Input \n Please enter a row choice from 1 to 3 only"), TEXT("Error"), MB_ICONERROR | MB_OK);
 		return false;
 	}
 
 }
-
 
 bool EchelonCheck(HWND _hDlg)
 {
@@ -272,99 +348,135 @@ bool EchelonCheck(HWND _hDlg)
 	vector<vector<float>*>* TheMatrix = new vector<vector<float>*>;
 
 	//create the matrix from given values 
-	CreateMatrix(_hDlg, TheMatrix);
-
-	if( (NonZeroRowCheck(TheMatrix)) &&
-		(LeadingCoefficientCheck(TheMatrix)) &&
-		(BelowLeadingZero(TheMatrix)))
+	if(CreateMatrix(_hDlg, TheMatrix))
 	{
-		return (true);
-	}
-	else
-	{
-		return (false);
-	}
-}
 
-bool NonZeroRowCheck(vector<vector<float>*>* _TheMatrix)
-{
-	bool bFirstZero = true;
-	bool bReturn = true;
+		float checkValue;
+		int LeadingNonZeroColumn= -1;
+		int ZeroColumn = -1;
 	
-	float checkValue;
-
-	for (int iRow = 0; iRow < 3; iRow++)
-	{
-		bFirstZero = true;
-		for (int iColumn = 0; iColumn < 4; iColumn++)
+		for(int iRow = 0; iRow < 3; iRow++)
 		{
-			checkValue = (*(*_TheMatrix)[iRow])[iColumn];
-			if ((*(*_TheMatrix)[iRow])[iColumn] != 0)
+			for (int iColumn = 0; iColumn < 4; iColumn++)
 			{
-				bFirstZero = false;
-				break;
-			}
-		}
-		if (bFirstZero)
-		{
-			if (iRow == 0)  // if first row is all zeros then all values must be zero , if not return false
-			{
-				for (int iNewRow = 1; iRow < 3; iRow++)
+				checkValue = (*(*TheMatrix)[iRow])[iColumn];
+			
+				if(checkValue != 0 )  
+				//finds first non zero value, saves the column, and exits the row check
 				{
-					for (int iColumn = 0; iColumn < 4; iColumn++)
+					if(iColumn == 3)
 					{
-						checkValue = (*(*_TheMatrix)[iNewRow])[iColumn];
-						if ((*(*_TheMatrix)[iNewRow])[iColumn] != 0)
+						MessageBox(_hDlg, TEXT("Equation Cant exist \n The last column cant be the first non-Zero value in a row "), TEXT("ERROR"), MB_ICONSTOP | MB_OK);
+						return false;
+					}
+					if(iColumn > LeadingNonZeroColumn) 
+					// checks to see if the coloumn index if greater than the saved column
+					// (the column where a non zero value has been found)								   
+					{
+						LeadingNonZeroColumn = iColumn;  // overwrites the saved column with the new one
+						iColumn = 4;					 // exits the checking the rest of the values in the row
+					}
+					else
+					{
+						return false;					 // if a non-zero was found, but it was to the left of the one above it return false
+					}
+				}
+				else if(checkValue == 0)
+				{
+					ZeroColumn = iColumn;
+
+					//checks to see that all values bellow the checkValue are also 0,
+					//if not return false
+					for(int i = 2;i > iRow ; i--)
+					{
+						if( (*(*TheMatrix)[i])[ZeroColumn] != 0)
 						{
-							bReturn = false;
-							return bReturn;
-							break;
+							return false;
 						}
 					}
-
+				
 				}
-				bReturn = true;
-				return bReturn;
-			}
-			else if (iRow == 1) // if its the second row that has all zeros then the third row must be all zeros if not return false
-			{
-				for (int iColumn = 0; iColumn < 4; iColumn++)
-				{
-					checkValue = (*(*_TheMatrix)[2])[iColumn];
-					if ((*(*_TheMatrix)[2])[iColumn] != 0)
-					{
-						bReturn = false;
-						return bReturn;
-						break;
-					}
-				}
-				bReturn = true;
-				return bReturn;
-			}
-			else  // must be the third row with all zeros, and thats all gravy no extra check required return true
-			{
-				bReturn = true;
-				return bReturn;
 			}
 		}
+		//if we made it to this point then it means that the matrics in Row Echelon form
+		return true;
 	}
-	//bReturn = false;
-	return bReturn; //if we get here it means no row has only zeros there for return true
+	
 
+	return false;
 }
 
-bool LeadingCoefficientCheck(vector<vector<float>*>* _TheMatrix)
+bool ReDucedEchelonCheck(HWND _hDlg)
 {
-	return true;
+
+	vector<vector<float>*>* TheMatrix = new vector<vector<float>*>;
+
+	//create the matrix from given values 
+	if(CreateMatrix(_hDlg, TheMatrix))
+	{
+
+
+		float checkValue;
+		int LeadingNonZeroColumn= 4;
+		int ZeroColumn = -1;
+	
+		for(int iRow = 2; iRow >= 0; iRow--)
+		{
+			for (int iColumn = 0; iColumn < 3; iColumn++)
+			{
+				checkValue = (*(*TheMatrix)[iRow])[iColumn];
+			
+				if(checkValue != 0 )  
+				//finds first non zero value, saves the column, and exits the row check
+				{
+					if(checkValue != 1)
+					{
+						return false;
+					}
+					else if(iColumn < LeadingNonZeroColumn) 
+					// checks to see if the coloumn index if greater than the saved column
+					// (the column where a non zero value has been found)								   
+					{
+
+						for(int i = 0; i < iRow ; i++)
+						//checks to see if all values above it are 0
+						{
+							if((*(*TheMatrix)[i])[iColumn] != 0)
+							{
+								return false;
+							}
+						}
+
+						LeadingNonZeroColumn = iColumn;  // overwrites the saved column with the new one
+						iColumn = 4;					 // exits the checking the rest of the values in the row
+					}
+					else
+					{
+						return false;					 // if a non-zero was found, but it was to the left of the one above it return false
+					}
+				}
+				else if(checkValue == 0)
+				{
+					ZeroColumn = iColumn;
+
+					//checks to see that all values bellow the checkValue are also 0,
+					//if not return false
+					for(int i = 2;i > iRow ; i--)
+					{
+						if( (*(*TheMatrix)[i])[ZeroColumn] != 0)
+						{
+							return false;
+						}
+					}
+				
+				}
+			}
+		}
+		//if we made it to this point then it means that the matrics in Row Echelon form
+		return true;
+	}
+	return false;
 }
-
-bool BelowLeadingZero(vector<vector<float>*>* _TheMatrix)
-{
-	return true;
-}
-
-
-
 
 bool GaussianSwap(HWND _hDlg)
 {
@@ -375,19 +487,26 @@ bool GaussianSwap(HWND _hDlg)
 	vector<vector<float>*>* TheMatrix = new vector<vector<float>*>;
 
 	//create the matrix from given values 
-	CreateMatrix(_hDlg, TheMatrix);
-
-	float fTemp;
-	for (int i = 0; i < 4; i++)
+	if(CreateMatrix(_hDlg, TheMatrix))
 	{
-		fTemp = ((*(*TheMatrix)[iRowA])[i]);
-		((*(*TheMatrix)[iRowA])[i]) = ((*(*TheMatrix)[iRowB])[i]);
-		((*(*TheMatrix)[iRowB])[i]) = fTemp;
+
+		float fTemp;
+		for (int i = 0; i < 4; i++)
+		{
+			fTemp = ((*(*TheMatrix)[iRowA])[i]);
+			((*(*TheMatrix)[iRowA])[i]) = ((*(*TheMatrix)[iRowB])[i]);
+			((*(*TheMatrix)[iRowB])[i]) = fTemp;
+		}
+
+		//set text boxes using the matrix
+		SetTextBox(_hDlg, TheMatrix);
+		
 	}
-
-	//set text boxes using the matrix
-	SetTextBox(_hDlg, TheMatrix);
-
+	else
+	{
+		MessageBox(_hDlg, TEXT("Invalid Input Found in Matrix"), TEXT("ERROR"), MB_ICONSTOP | MB_OK);
+		return false;
+	}
 	return (true);
 }
 
@@ -403,17 +522,24 @@ bool GaussianMultiply(HWND _hDlg)
 	float fScalar = (WideStringToFloat(wstrTemp));
 
 	//create the matrix from given values 
-	CreateMatrix(_hDlg, TheMatrix);
-
-	for (int i = 0; i < 4; i++)
+	if(CreateMatrix(_hDlg, TheMatrix))
 	{
-		((*(*TheMatrix)[iRow])[i]) = fScalar*((*(*TheMatrix)[iRow])[i]);
+
+		for (int i = 0; i < 4; i++)
+		{
+			((*(*TheMatrix)[iRow])[i]) = fScalar*((*(*TheMatrix)[iRow])[i]);
+		}
+
+		//set text boxes using the matrix
+		SetTextBox(_hDlg, TheMatrix);
 	}
-
-	//set text boxes using the matrix
-	SetTextBox(_hDlg, TheMatrix);
-
+	else
+	{
+		MessageBox(_hDlg, TEXT("Invalid Input Found in Matrix"), TEXT("ERROR"), MB_ICONSTOP | MB_OK);
+		return false;
+	}
 	return (true);
+	
 }
 
 bool GaussianAdd(HWND _hDlg)
@@ -429,15 +555,22 @@ bool GaussianAdd(HWND _hDlg)
 	vector<vector<float>*>* TheMatrix = new vector<vector<float>*>;
 
 	//create the matrix from given values 
-	CreateMatrix(_hDlg, TheMatrix);
-
-	for (int i = 0; i < 4; i++)
+	if(CreateMatrix(_hDlg, TheMatrix))
 	{
-		((*(*TheMatrix)[iRowB])[i]) = fScalar*((*(*TheMatrix)[iRowA])[i]) + ((*(*TheMatrix)[iRowB])[i]);
-	}
 
-	//set text boxes using the matrix
-	SetTextBox(_hDlg, TheMatrix);
+		for (int i = 0; i < 4; i++)
+		{
+			((*(*TheMatrix)[iRowB])[i]) = fScalar*((*(*TheMatrix)[iRowA])[i]) + ((*(*TheMatrix)[iRowB])[i]);
+		}
+
+		//set text boxes using the matrix
+		SetTextBox(_hDlg, TheMatrix);
+	}
+	else
+	{
+		MessageBox(_hDlg, TEXT("Invalid Input Found in Matrix"), TEXT("ERROR"), MB_ICONSTOP | MB_OK);
+		return false;
+	}
 
 	return (true);
 }
