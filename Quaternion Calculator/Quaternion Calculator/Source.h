@@ -34,6 +34,8 @@ const int B = 2; //if qauternion B will be the (first) quaternion in the equatio
 using namespace std;
 
 //functions Prototypes 
+//Inisialise Value in Text boxes
+bool Initialise(HWND _hDlg);
 
 //Input checks
 bool InputCheck(string &_str);
@@ -50,36 +52,21 @@ bool GetScalar(HWND _hDlg, float* _pfScalarA);
 
 //Set text Boxes
 bool setResult(HWND _hDlg, vector<float>* _pResultQuat);
-bool setResult(HWND _hDlg, float _fResult);
+bool setResult(HWND _hDlg, float* _pfResult);
 
+//Quaternion Calculations
 bool Add(HWND _hDlg);
 
 bool Sub(HWND _hDlg, int _iChoice);
 
-
-
-bool MultiplyQuaternionAB(HWND _hDlg);
-bool MultiplyQuaternionBA(HWND _hDlg);
 bool MultiplyQuaternion(HWND _hDlg, int _iChoice);
-bool MultiplyQuaternion(vector<float>* _pRowOne, vector<float>* _pRowTwo );
 
-
-bool ScalarMultiplyA(HWND _hDlg);
-bool ScalarMultiplyB(HWND _hDlg);
 bool ScalarMultiply(HWND _hDlg, int _iChoice);
-bool ScalarMultiply(vector<float>* _pRowOne, vector<float>* _pRowTwo );
 
-
-bool ConjegateA(HWND _hDlg);
-bool ConjegateB(HWND _hDlg);
 bool Conjegate(HWND _hDlg, int _iChoice);
-bool Conjegate(vector<float>* _pRow);
 
-
-bool InverseA(HWND _hDlg);
-bool InverseB(HWND _hDlg);
 bool Inverse(HWND _hDlg, int _iChoice);
-bool Inverse(vector<float>* _pRow);
 
-bool Mag(HWND _hDlg);
+bool Mag(HWND _hDlg, int _iChoice);
+
 bool Dot(HWND _hDlg);

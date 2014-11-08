@@ -48,38 +48,47 @@ BOOL CALLBACK DialogProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam)
 			}
 		case IDC_A_B:
 			{
+				MultiplyQuaternion(hDlg,A);
 				break;
 			}
 		case IDC_B_A:
 			{
+				MultiplyQuaternion(hDlg,B);
 				break;
 			}
 		case IDC_A_DOT_B:
 			{
+				Dot(hDlg);
 				break;
 			}
 		case IDC_A_CONJ:
 			{
+				Conjegate(hDlg, A);
 				break;
 			}
 		case IDC_B_CONJ:
 			{
+				Conjegate(hDlg, B);
 				break;
 			}
 		case IDC_MAG_A:
 			{
+				Mag(hDlg, A);
 				break;
 			}
 		case IDC_MAG_B:
 			{
+				Mag(hDlg, B);
 				break;
 			}
 		case IDC_INV_A:
 			{
+				Inverse(hDlg, A);
 				break;
 			}
 		case IDC_INV_B:
 			{
+				Inverse(hDlg, B);
 				break;
 			}
 		case IDC_T_A:
@@ -132,6 +141,7 @@ int WINAPI _tWinMain(HINSTANCE hInst, HINSTANCE h0, LPTSTR lpCmdLine, int nCmdSh
 
 	
 	hDlg = CreateDialogParam(hInst, MAKEINTRESOURCE(IDD_QUATERNION_CALC), 0, DialogProc, 0);
+	Initialise(hDlg);
 	ShowWindow(hDlg, nCmdShow);
 
 	while((ret = GetMessage(&msg, 0, 0, 0)) != 0)
