@@ -1,79 +1,35 @@
-#include <Windows.h>
-#include <CommCtrl.h>
-#include <tchar.h>
-#include "resource.h"
+#include "Source.h"
 
 
-#pragma comment(lib, "ComCtl32.lib")
 
-INT_PTR CALLBACK DialogProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam)
+BOOL CALLBACK DialogProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
 	switch(uMsg)
 	{
 	case WM_COMMAND:
 	    switch(LOWORD(wParam))
 	    {
-		case IDCANCEL:
+		case IDC_SLERP:
 			{
-				SendMessage(hDlg, WM_CLOSE, 0, 0);
-				return TRUE;
-			}
-		case IDC_A_TO_I:
-			{
+				slerp(hDlg);
 				break;
 			}
-		case IDC_B_TO_I:
+		case IDC_MATRIX_A:
 			{
+				Matrix(hDlg, A);
 				break;
 			}
-		case IDC_MAG_A:
+		case IDC_MATRIX_B:
 			{
+				Matrix(hDlg, B);
 				break;
 			}
-		case IDC_MAG_B:
+		case IDC_MATRIX_SLERP:
 			{
+				Matrix(hDlg, SLERP);
 				break;
 			}
-		case IDC_TRANS_A:
-			{
-				break;
-			}
-		case IDC_TRANS_B:
-			{
-				break;
-			}
-		case IDC_INVERSE_A:
-			{
-				break;
-			}
-		case IDC_INVERSE_B:
-			{
-				break;
-			}
-		case IDC_MULTIPLY_A:
-			{
-				break;
-			}
-		case IDC_MULTIPLY_B:
-			{
-				break;
-			}
-		case IDC_ADD:
-			{
-				break;
-			}
-		case IDC_SUB:
-			{
-				break;
-			}
-		case IDC_AB:
-			{
-				break;
-			}
-		case IDC_BA:
-			{
-				break;
-			}
+		
 	    }
 		break;
 
@@ -103,8 +59,9 @@ int WINAPI _tWinMain(HINSTANCE hInst, HINSTANCE h0, LPTSTR lpCmdLine, int nCmdSh
 	MSG msg;
 	BOOL ret;
 
-	InitCommonControls();
+
 	hDlg = CreateDialogParam(hInst, MAKEINTRESOURCE(IDD_SLERP_CALC), 0, DialogProc, 0);
+	Initialise(hDlg);
 	ShowWindow(hDlg, nCmdShow);
 
 	while((ret = GetMessage(&msg, 0, 0, 0)) != 0)
