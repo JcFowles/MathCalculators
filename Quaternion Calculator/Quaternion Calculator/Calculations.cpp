@@ -233,6 +233,11 @@ bool GetQuaternion(HWND _hDlg, vector<float>* _pfQuatA, vector<float>* _pfQuatB)
 		}
 	}
 
+	delete pStrTempQuatA;
+	pStrTempQuatA = 0;
+	delete pStrTempQuatB;
+	pStrTempQuatB = 0;
+
 	return (true);
 
 }
@@ -434,7 +439,7 @@ bool MultiplyQuaternion(HWND _hDlg, int _iChoice)
 	//gets the Quaternions
 	if(GetQuaternion(_hDlg, pfQuatA, pfQuatB) )
 	{
-		if(_iChoice == 1)
+		if(_iChoice == A)
 		{
 			//R[0] = ( B[3]A[0] + B[0]A[3] - B[1]A[2] + B[2]A[1] )
 			(*pfResult).push_back( ((*pfQuatB)[3]*(*pfQuatA)[0])  +  ((*pfQuatB)[0]*(*pfQuatA)[3])	-  ((*pfQuatB)[1]*(*pfQuatA)[2])  +  ((*pfQuatB)[2]*(*pfQuatA)[1]) );
@@ -448,7 +453,7 @@ bool MultiplyQuaternion(HWND _hDlg, int _iChoice)
 			//R[3] = ( B[3]A[3] + B[0]A[0] + B[1]A[1] - B[2]A[2] )
 			(*pfResult).push_back( ((*pfQuatB)[3]*(*pfQuatA)[3])  -  ((*pfQuatB)[0]*(*pfQuatA)[0])	-  ((*pfQuatB)[1]*(*pfQuatA)[1])  -  ((*pfQuatB)[2]*(*pfQuatA)[2]) );
 		}
-		else if(_iChoice == 2)
+		else if(_iChoice == B)
 		{
 			//R[0] = ( A[3]B[0] + A[0]B[3] - A[1]B[2] + A[2]B[1] )
 			(*pfResult).push_back( ((*pfQuatA)[3]*(*pfQuatB)[0])  +  ((*pfQuatA)[0]*(*pfQuatB)[3])	-  ((*pfQuatA)[1]*(*pfQuatB)[2])  +  ((*pfQuatA)[2]*(*pfQuatB)[1]) );

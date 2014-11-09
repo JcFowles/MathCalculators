@@ -357,7 +357,7 @@ bool SetTextBox(HWND _hDlg, vector<vector<float>*>* _fMatrix)
 	strTemp = FloatToString((*(*_fMatrix)[1])[3]);
 	SetDlgItemTextA(_hDlg, IDC_MATRIX_13, strTemp.c_str());
 
-	//set the Second row
+	//set the Third row
 	strTemp = FloatToString((*(*_fMatrix)[2])[0]);
 	SetDlgItemTextA(_hDlg, IDC_MATRIX_20, strTemp.c_str());
 	strTemp = FloatToString((*(*_fMatrix)[2])[1]);
