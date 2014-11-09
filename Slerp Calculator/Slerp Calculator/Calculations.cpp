@@ -304,7 +304,16 @@ bool GetScalar(HWND _hDlg, float* _fpScalar)
 	if(InputCheck(strScalar))
 	{
 		*_fpScalar = stof(strScalar);
-		return true;
+		if((*_fpScalar) <= 1 &&
+		   (*_fpScalar) >= 0)
+		{
+			return true;
+		}
+		else
+		{
+			return false;
+		}
+		
 	}
 	else
 	{
@@ -409,6 +418,48 @@ bool setResult(HWND _hDlg, vector<vector<float>*>* _pfMatrix)
 ********************/
 bool slerp(HWND _hDlg)
 {
+	float fOmega = 0.0f;
+
+	float fScalor = 0.0f;
+
+	vector<float>* pfQuatA = new vector<float>;
+	vector<float>* pfQuatB = new vector<float>;
+	vector<float>* pfQuatSlerp = new vector<float>;
+
+	//gets the Quaternions
+	if(GetQuaternion(_hDlg, pfQuatA, pfQuatB, pfQuatSlerp) && GetScalar(_hDlg, &fScalor))
+	{
+
+		//compute the dot product to get omega
+		for(int i = 0; i < 4; i++)
+		{
+			(fOmega) +=  (*pfQuatA)[i] * (*pfQuatB)[i] ;	
+		}
+
+		//problem here  //need to ensure dot product does not exceed -1 -> 1
+		fOmega = acos(fOmega);
+
+		for(int i = 0; i < 4; i++)
+		{
+			//slerp formula using omega
+			(*pfQuatSlerp)[i] = (((sin((1 - fScalor)*fOmega))/sin(fOmega))*(*pfQuatA)[i]) + (((sin(fScalor*fOmega))/sin(fOmega))*(*pfQuatB)[i]);
+		}
+
+	}
+	else //could not create the Quaternion because invalid input was found
+	{
+
+		MessageBox(_hDlg, TEXT("Invalid Input Found in Quaternions \n Or scalar value exceeds the bounds of 0 - 1"), TEXT("ERROR"), MB_ICONSTOP | MB_OK);
+		return false;
+	}
+	
+	setResult(_hDlg, pfQuatSlerp);
+
+	delete pfQuatA;
+	pfQuatA  = 0 ;
+	delete pfQuatB;
+	pfQuatB = 0;
+
 	return (true);
 }
 
@@ -443,6 +494,7 @@ bool Matrix(HWND _hDlg, int _iChoice)
 	}
 	//float* pfMatrix[4][4];
 	pfTempQuat = new vector<float>;
+	
 	//gets the Quaternions
 	if(GetQuaternion(_hDlg, pfQuatA, pfQuatB, pfQuatSlerp) )
 	{
@@ -477,9 +529,18 @@ bool Matrix(HWND _hDlg, int _iChoice)
 	for(int i = 0; i < 4; i++)
 	{
 		//constant value
+		// [0][0] = +
+		// [1][1] = +
+		// [2][2] = +
+		// [3][3] = +
 		((*(*pfMatrix)[i])[i]) =  (*pfTempQuat)[3]; 
 
 		// k value
+		// daigonaly from top right to bottom left
+		// [0][3] = +
+		// [1][2] = -
+		// [2][1] = +
+		// [3][0] = -
 		if(i % 2) //i is odd
 		{
 			((*(*pfMatrix)[i])[k]) = -1*(*pfTempQuat)[2]; 
@@ -490,6 +551,10 @@ bool Matrix(HWND _hDlg, int _iChoice)
 		}
 
 		//i value
+		// [0][1] = +
+		// [1][0] = -
+		// [2][3] = -
+		// [3][2] = +
 		if(i % 2) //i is odd
 		{
 			if(i == 1)
@@ -515,6 +580,10 @@ bool Matrix(HWND _hDlg, int _iChoice)
 		}
 
 		//j value
+		// [0][2] = +
+		// [1][3] = +
+		// [2][0] = -
+		// [3][1] = -
 		if(i < 2)
 		{
 			((*(*pfMatrix)[i])[i+2]) = (*pfTempQuat)[1];

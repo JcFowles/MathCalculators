@@ -27,6 +27,7 @@ const int SLERP = 3;	//Qauternion SLERP
 #include <tchar.h>
 #include <vector>
 #include <algorithm>
+#include <cmath>
 
 //local includes
 #include "resource.h"
