@@ -261,7 +261,7 @@ bool GetQuaternion(HWND _hDlg, vector<float>* _pfQuatA, vector<float>* _pfQuatB,
 			//convert to flaots and push onto the float vector
 			(*_pfQuatA).push_back(stof((*pStrTempQuatA)[i]));
 			(*_pfQuatB).push_back(stof((*pStrTempQuatB)[i]));
-			(*_pfQuatSlerp).push_back(stof((*pStrTempQuatB)[i]));
+			(*_pfQuatSlerp).push_back(stof((*pStrTempQuatSlerp)[i]));
 		}
 		else
 		{
@@ -424,25 +424,80 @@ bool slerp(HWND _hDlg)
 
 	vector<float>* pfQuatA = new vector<float>;
 	vector<float>* pfQuatB = new vector<float>;
+
+	vector<float>* pfNormQuatA = new vector<float>;
+	vector<float>* pfNormQuatB = new vector<float>;
+
 	vector<float>* pfQuatSlerp = new vector<float>;
 
 	//gets the Quaternions
 	if(GetQuaternion(_hDlg, pfQuatA, pfQuatB, pfQuatSlerp) && GetScalar(_hDlg, &fScalor))
 	{
+		//Normalising the 2 quaternions
+		//Getting the magnitude
+		float fMagA = 0.0f;
+		float fMagB = 0.0f;
+		//magnitude
+		for(int i = 0; i < 4; i++)
+		{
+			fMagA += (*pfQuatA)[i] * (*pfQuatA)[i] ;
+			fMagB += (*pfQuatB)[i] * (*pfQuatB)[i] ;
+		}
+
+		fMagA = sqrt(fMagA);
+		fMagB = sqrt(fMagB);
+
+		for(int i = 0 ; i < 4; i++)
+		{
+			pfNormQuatA->push_back((*pfQuatA)[i]/fMagA);
+			pfNormQuatB->push_back((*pfQuatB)[i]/fMagB);
+		}
+
 
 		//compute the dot product to get omega
 		for(int i = 0; i < 4; i++)
 		{
-			(fOmega) +=  (*pfQuatA)[i] * (*pfQuatB)[i] ;	
+			(fOmega) +=  (*pfNormQuatA)[i] * (*pfNormQuatB)[i] ;	
+		}
+
+		// If negative dot, negate one of the input
+		// quaternions to take the shorter 4D "arc"
+		if(fOmega < 0.0f)
+		{
+			for(int i = 0; i < 4; i++)
+			{
+				(*pfNormQuatB)[i] = -1*(*pfNormQuatB)[i];
+			}
+			fOmega = -1*fOmega;
+		}
+
+
+		// Check if they are very close together to protect
+		// against divide-by-zero
+		float fScalar0 = 0.0f;
+		float fScalar1 = 0.0f;
+		if(fOmega > 0.9999f)
+		{
+			// Very close - just use linear interpolation
+
+			fScalar0 = 1.0f - fScalor;
+			fScalar1 = fScalor;
+		}
+		else
+		{
+			fScalar0 = ((sin((1 - fScalor)*fOmega))/sin(fOmega));
+			fScalar1 = ((sin(fScalor*fOmega))/sin(fOmega));
 		}
 
 		//problem here  //need to ensure dot product does not exceed -1 -> 1
 		fOmega = acos(fOmega);
 
+		
+
 		for(int i = 0; i < 4; i++)
 		{
 			//slerp formula using omega
-			(*pfQuatSlerp)[i] = (((sin((1 - fScalor)*fOmega))/sin(fOmega))*(*pfQuatA)[i]) + (((sin(fScalor*fOmega))/sin(fOmega))*(*pfQuatB)[i]);
+			(*pfQuatSlerp)[i] = (fScalar0 * (*pfQuatA)[i]) + (fScalar1 * (*pfQuatB)[i]);
 		}
 
 	}
@@ -602,12 +657,12 @@ bool Matrix(HWND _hDlg, int _iChoice)
 	delete pfQuatA;
 	delete pfQuatB;
 	delete pfQuatSlerp;
-	delete pfTempQuat; 
+//	delete pfTempQuat; 
 
 	pfQuatA = 0;
 	pfQuatB = 0;
 	pfQuatSlerp = 0;
-	pfTempQuat = 0;
+//	pfTempQuat = 0;
 
 
 	return (true);
