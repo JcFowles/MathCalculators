@@ -54,10 +54,12 @@ string WideStringToString(const wchar_t* _kpwstr);
 //Get Matrices from the text boxes
 bool GetStrMatrix(HWND _hDlg, vector<vector<string>*>* _pMatrixA,vector<vector<string>*>* _pMatrixB);
 bool GetMatrix(HWND _hDlg, vector<vector<float>*>* _pMatrixA,vector<vector<float>*>* _pMatrixB);
-float GetScalar(HWND _hDlg, int _iMatrixChoice, int _iScalarChoice);
+bool GetScalar(HWND _hDlg, int _iMatrixChoice, float* _fpScalar);
 
-//Set the matrices Text boxes
+//Set the matrices/scalar Text boxes
 bool SetMatrix(HWND _hDlg, vector<vector<float>*>* _pMatrix, int _iChoice);
+bool SetScalar(HWND _hDlg, int _iMatrixChoice, float* _fpScalar);
+
 
 //single matrix calculations
 bool SetToI(HWND _hDlg, int _iChoice);

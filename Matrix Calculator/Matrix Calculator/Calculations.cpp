@@ -361,7 +361,6 @@ bool GetStrMatrix(HWND _hDlg, vector<vector<string>*>* _pMatrixA,vector<vector<s
 	return (true);
 }
 
-
 /***********************
 * GetMatrix: Gets the values from the Matrices dialog boxes and stores it into a float vector 
 * @author: Jc Fowles
@@ -373,5 +372,279 @@ bool GetStrMatrix(HWND _hDlg, vector<vector<string>*>* _pMatrixA,vector<vector<s
 bool GetMatrix(HWND _hDlg, vector<vector<float>*>* _pMatrixA,vector<vector<float>*>* _pMatrixB)
 {
 
+//temp matrix row
+	vector<float>* vpfTempA = new vector<float>;
+	vector<float>* vpfTempB = new vector<float>;
+
+	//creates a string matrix
+	vector<vector<string>*>* strMatrixA = new vector<vector<string>*>;
+	vector<vector<string>*>* strMatrixB = new vector<vector<string>*>;
+	GetStrMatrix(_hDlg , strMatrixA, strMatrixB);
+
+	for(int iRow = 0; iRow < 4; iRow++)
+	{
+		for(int iColumn = 0; iColumn < 4; iColumn++)
+		{
+			//check if valid input
+			if (InputCheck(  (*(*strMatrixA)[iRow])[iColumn]) &&
+				InputCheck(  (*(*strMatrixB)[iRow])[iColumn]))
+			{
+				//push valid float input into the temp row 
+				(*vpfTempA).push_back( (stof((*(*strMatrixA)[iRow])[iColumn])));
+				(*vpfTempB).push_back( (stof((*(*strMatrixB)[iRow])[iColumn])));
+			}
+			else
+			{
+				//invalid input found
+				return false;
+			}
+		}
+		
+		//add the temp row to the matrix
+		(*_pMatrixA).push_back(vpfTempA);
+		(*_pMatrixB).push_back(vpfTempB);
+		
+		//clear the temp row
+		vpfTempA = new vector<float>;
+		vpfTempB = new vector<float>;
+	}
+
+	return true;
 }
-float GetScalar(HWND _hDlg, int _iMatrixChoice, int _iScalarChoice);
+
+/***********************
+* GetScalar: Gets and convert data from the scalar t dialog box
+* @author: Jc Fowles
+* @parameter: _hDlg: handle to the dialog box
+* @parameter: _iMatrixChoice: Which matrix are you working with A or B
+* @parameter: _fpScalar: a pointer to float, in which to store the scalar
+* @return: bool: return true, if no errors exist
+********************/
+bool GetScalar(HWND _hDlg, int _iMatrixChoice, float* _fpScalar)
+{
+	//String Pointer to store the string values of the scalar
+	string strScalar;
+
+	//temp stringh to store the value in the dialog box
+	wchar_t wstrTempA[100];
+
+	
+	switch(_iMatrixChoice)
+	{
+	case A:
+		{
+			//Get the Scalar value
+			GetDlgItemText(_hDlg, IDC_A_SCALAR, wstrTempA, 100);
+			(strScalar) = (WideStringToString(wstrTempA));	
+		}
+		break;
+	case B:
+		{
+			//Get the Scalar value
+			GetDlgItemText(_hDlg, IDC_B_SCALAR, wstrTempA, 100);
+			(strScalar) = (WideStringToString(wstrTempA));	
+		}
+		break;
+	}
+	
+
+	if(InputCheck(strScalar))
+	{
+		(*_fpScalar) = stof(strScalar);
+		return true;
+	}
+	else
+	{
+		return false;
+	}
+}
+
+/***********************
+* SetMatrix: Sets the matrix text boxes based on choosen matrix
+* @author: Jc Fowles
+* @parameter: _hDlg: handle to the dialog box
+* @parameter: _pMatrix: a pointer to the matrix which hold the values that we want to set the text boxes to
+* @parameter: _iChoice: the choice of which mtrix we working with
+* @return: bool: return true
+********************/
+bool SetMatrix(HWND _hDlg, vector<vector<float>*>* _pMatrix, int _iChoice)
+{
+
+	string strTemp;
+	switch(_iChoice)
+	{
+	case A:
+		{
+			//set the first row
+			strTemp = FloatToString((*(*_pMatrix)[0])[0]);
+			SetDlgItemTextA(_hDlg, IDC_A_00, strTemp.c_str());
+			strTemp = FloatToString((*(*_pMatrix)[0])[1]);
+			SetDlgItemTextA(_hDlg, IDC_A_01, strTemp.c_str());
+			strTemp = FloatToString((*(*_pMatrix)[0])[2]);
+			SetDlgItemTextA(_hDlg, IDC_A_02, strTemp.c_str());
+			strTemp = FloatToString((*(*_pMatrix)[0])[3]);
+			SetDlgItemTextA(_hDlg, IDC_A_03, strTemp.c_str());
+
+			//set the Second row
+			strTemp = FloatToString((*(*_pMatrix)[1])[0]);
+			SetDlgItemTextA(_hDlg, IDC_A_10, strTemp.c_str());
+			strTemp = FloatToString((*(*_pMatrix)[1])[1]);
+			SetDlgItemTextA(_hDlg, IDC_A_11, strTemp.c_str());
+			strTemp = FloatToString((*(*_pMatrix)[1])[2]);
+			SetDlgItemTextA(_hDlg, IDC_A_12, strTemp.c_str());
+			strTemp = FloatToString((*(*_pMatrix)[1])[3]);
+			SetDlgItemTextA(_hDlg, IDC_A_13, strTemp.c_str());
+
+			//set the Third row
+			strTemp = FloatToString((*(*_pMatrix)[2])[0]);
+			SetDlgItemTextA(_hDlg, IDC_A_20, strTemp.c_str());
+			strTemp = FloatToString((*(*_pMatrix)[2])[1]);
+			SetDlgItemTextA(_hDlg, IDC_A_21, strTemp.c_str());
+			strTemp = FloatToString((*(*_pMatrix)[2])[2]);
+			SetDlgItemTextA(_hDlg, IDC_A_22, strTemp.c_str());
+			strTemp = FloatToString((*(*_pMatrix)[2])[3]);
+			SetDlgItemTextA(_hDlg, IDC_A_23, strTemp.c_str());
+
+			//set the fourth row
+			strTemp = FloatToString((*(*_pMatrix)[2])[0]);
+			SetDlgItemTextA(_hDlg, IDC_A_30, strTemp.c_str());
+			strTemp = FloatToString((*(*_pMatrix)[2])[1]);
+			SetDlgItemTextA(_hDlg, IDC_A_31, strTemp.c_str());
+			strTemp = FloatToString((*(*_pMatrix)[2])[2]);
+			SetDlgItemTextA(_hDlg, IDC_A_32, strTemp.c_str());
+			strTemp = FloatToString((*(*_pMatrix)[2])[3]);
+			SetDlgItemTextA(_hDlg, IDC_A_33, strTemp.c_str());
+
+		}
+		break;
+	case B:
+		{
+			//set the first row
+			strTemp = FloatToString((*(*_pMatrix)[0])[0]);
+			SetDlgItemTextA(_hDlg, IDC_B_00, strTemp.c_str());
+			strTemp = FloatToString((*(*_pMatrix)[0])[1]);
+			SetDlgItemTextA(_hDlg, IDC_B_01, strTemp.c_str());
+			strTemp = FloatToString((*(*_pMatrix)[0])[2]);
+			SetDlgItemTextA(_hDlg, IDC_B_02, strTemp.c_str());
+			strTemp = FloatToString((*(*_pMatrix)[0])[3]);
+			SetDlgItemTextA(_hDlg, IDC_B_03, strTemp.c_str());
+
+			//set the Second row
+			strTemp = FloatToString((*(*_pMatrix)[1])[0]);
+			SetDlgItemTextA(_hDlg, IDC_B_10, strTemp.c_str());
+			strTemp = FloatToString((*(*_pMatrix)[1])[1]);
+			SetDlgItemTextA(_hDlg, IDC_B_11, strTemp.c_str());
+			strTemp = FloatToString((*(*_pMatrix)[1])[2]);
+			SetDlgItemTextA(_hDlg, IDC_B_12, strTemp.c_str());
+			strTemp = FloatToString((*(*_pMatrix)[1])[3]);
+			SetDlgItemTextA(_hDlg, IDC_B_13, strTemp.c_str());
+
+			//set the Third row
+			strTemp = FloatToString((*(*_pMatrix)[2])[0]);
+			SetDlgItemTextA(_hDlg, IDC_B_20, strTemp.c_str());
+			strTemp = FloatToString((*(*_pMatrix)[2])[1]);
+			SetDlgItemTextA(_hDlg, IDC_B_21, strTemp.c_str());
+			strTemp = FloatToString((*(*_pMatrix)[2])[2]);
+			SetDlgItemTextA(_hDlg, IDC_B_22, strTemp.c_str());
+			strTemp = FloatToString((*(*_pMatrix)[2])[3]);
+			SetDlgItemTextA(_hDlg, IDC_B_23, strTemp.c_str());
+
+			//set the fourth row
+			strTemp = FloatToString((*(*_pMatrix)[2])[0]);
+			SetDlgItemTextA(_hDlg, IDC_B_30, strTemp.c_str());
+			strTemp = FloatToString((*(*_pMatrix)[2])[1]);
+			SetDlgItemTextA(_hDlg, IDC_B_31, strTemp.c_str());
+			strTemp = FloatToString((*(*_pMatrix)[2])[2]);
+			SetDlgItemTextA(_hDlg, IDC_B_32, strTemp.c_str());
+			strTemp = FloatToString((*(*_pMatrix)[2])[3]);
+			SetDlgItemTextA(_hDlg, IDC_B_33, strTemp.c_str());
+
+		}
+		break;
+	case Result:
+		{
+			//set the first row
+			strTemp = FloatToString((*(*_pMatrix)[0])[0]);
+			SetDlgItemTextA(_hDlg, IDC_RESULT_00, strTemp.c_str());
+			strTemp = FloatToString((*(*_pMatrix)[0])[1]);
+			SetDlgItemTextA(_hDlg, IDC_RESULT_01, strTemp.c_str());
+			strTemp = FloatToString((*(*_pMatrix)[0])[2]);
+			SetDlgItemTextA(_hDlg, IDC_RESULT_02, strTemp.c_str());
+			strTemp = FloatToString((*(*_pMatrix)[0])[3]);
+			SetDlgItemTextA(_hDlg, IDC_RESULT_03, strTemp.c_str());
+
+			//set the Second row
+			strTemp = FloatToString((*(*_pMatrix)[1])[0]);
+			SetDlgItemTextA(_hDlg, IDC_RESULT_10, strTemp.c_str());
+			strTemp = FloatToString((*(*_pMatrix)[1])[1]);
+			SetDlgItemTextA(_hDlg, IDC_RESULT_11, strTemp.c_str());
+			strTemp = FloatToString((*(*_pMatrix)[1])[2]);
+			SetDlgItemTextA(_hDlg, IDC_RESULT_12, strTemp.c_str());
+			strTemp = FloatToString((*(*_pMatrix)[1])[3]);
+			SetDlgItemTextA(_hDlg, IDC_RESULT_13, strTemp.c_str());
+
+			//set the Third row
+			strTemp = FloatToString((*(*_pMatrix)[2])[0]);
+			SetDlgItemTextA(_hDlg, IDC_RESULT_20, strTemp.c_str());
+			strTemp = FloatToString((*(*_pMatrix)[2])[1]);
+			SetDlgItemTextA(_hDlg, IDC_RESULT_21, strTemp.c_str());
+			strTemp = FloatToString((*(*_pMatrix)[2])[2]);
+			SetDlgItemTextA(_hDlg, IDC_RESULT_22, strTemp.c_str());
+			strTemp = FloatToString((*(*_pMatrix)[2])[3]);
+			SetDlgItemTextA(_hDlg, IDC_RESULT_23, strTemp.c_str());
+
+			//set the fourth row
+			strTemp = FloatToString((*(*_pMatrix)[2])[0]);
+			SetDlgItemTextA(_hDlg, IDC_RESULT_30, strTemp.c_str());
+			strTemp = FloatToString((*(*_pMatrix)[2])[1]);
+			SetDlgItemTextA(_hDlg, IDC_RESULT_31, strTemp.c_str());
+			strTemp = FloatToString((*(*_pMatrix)[2])[2]);
+			SetDlgItemTextA(_hDlg, IDC_RESULT_32, strTemp.c_str());
+			strTemp = FloatToString((*(*_pMatrix)[2])[3]);
+			SetDlgItemTextA(_hDlg, IDC_RESULT_33, strTemp.c_str());
+		}
+		break;
+	}
+
+	
+
+	//delete the matrix no longer required
+	delete _pMatrix;
+	_pMatrix = 0;
+
+	return (true);
+
+}
+
+/***********************
+* SetScalar: Sets scalar(Magnitude) text box 
+* @author: Jc Fowles
+* @parameter: _hDlg: handle to the dialog box
+* @parameter: _iMatrixChoice: Which matrix are you working with A or B
+* @parameter: _pfResult: a pointer to float,to which you want to set the text baox to
+* @return: bool: return true, if no errors exist
+********************/
+bool SetScalar(HWND _hDlg, int _iMatrixChoice, float* _pfResult)
+{
+	string strTemp;
+
+	switch(_iMatrixChoice)
+	{
+	case A:
+		{
+			//set the result Scalar text boxes
+			strTemp = FloatToString(*_pfResult);
+			SetDlgItemTextA(_hDlg, IDC_MAG_A, strTemp.c_str());
+		}
+		break;
+	case B:
+		{
+			//set the result Scalar text boxes
+			strTemp = FloatToString(*_pfResult);
+			SetDlgItemTextA(_hDlg, IDC_MAG_B, strTemp.c_str());
+		}
+		break;
+	}
+	
+	return (true);
+}
