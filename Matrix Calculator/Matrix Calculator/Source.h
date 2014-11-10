@@ -14,9 +14,13 @@
 
 #pragma once
 
-//define A then B or B then A
-const int A = 1; //if qauternion A will be the (first) quaternion in the equation  
-const int B = 2; //if qauternion B will be the (first) quaternion in the equation  
+//The Matrix coice
+const int A = 1;		//Matrix A
+const int B = 2;		//Matrix B
+const int Result = 3;	//Reslut Matrix
+
+const int Mag = 1;		//Magnited Text Box
+const int Multiply = 2; //Multipy Text Box
 
 //librarty includes 
 #include <iostream>
@@ -33,12 +37,7 @@ const int B = 2; //if qauternion B will be the (first) quaternion in the equatio
 //namespace
 using namespace std;
 
-const int A = 1;
-const int B = 2;
-const int Result = 3;
 
-const int mag = 1;
-const int Multiply = 2;
 
 //functions Prototypes 
 //Inisialise Value in Text boxes
@@ -53,7 +52,7 @@ float WideStringToFloat(const wchar_t* _kpwstr);
 string WideStringToString(const wchar_t* _kpwstr);
 
 //Get Matrices from the text boxes
-bool GetMatrix(HWND _hDlg, vector<vector<string>*>* _pMatrixA,vector<vector<string>*>* _pMatrixB);
+bool GetStrMatrix(HWND _hDlg, vector<vector<string>*>* _pMatrixA,vector<vector<string>*>* _pMatrixB);
 bool GetMatrix(HWND _hDlg, vector<vector<float>*>* _pMatrixA,vector<vector<float>*>* _pMatrixB);
 float GetScalar(HWND _hDlg, int _iMatrixChoice, int _iScalarChoice);
 

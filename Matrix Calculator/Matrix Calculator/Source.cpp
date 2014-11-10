@@ -131,6 +131,7 @@ int WINAPI _tWinMain(HINSTANCE hInst, HINSTANCE h0, LPTSTR lpCmdLine, int nCmdSh
 	BOOL ret;
 
 	hDlg = CreateDialogParam(hInst, MAKEINTRESOURCE(IDD_MATRIX_CALC), 0, DialogProc, 0);
+	Initialise(hDlg);
 	ShowWindow(hDlg, nCmdShow);
 
 	while((ret = GetMessage(&msg, 0, 0, 0)) != 0)
