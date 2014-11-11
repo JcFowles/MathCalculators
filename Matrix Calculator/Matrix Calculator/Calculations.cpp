@@ -506,13 +506,13 @@ bool SetMatrix(HWND _hDlg, vector<vector<float>*>* _pMatrix, int _iChoice)
 			SetDlgItemTextA(_hDlg, IDC_A_23, strTemp.c_str());
 
 			//set the fourth row
-			strTemp = FloatToString((*(*_pMatrix)[2])[0]);
+			strTemp = FloatToString((*(*_pMatrix)[3])[0]);
 			SetDlgItemTextA(_hDlg, IDC_A_30, strTemp.c_str());
-			strTemp = FloatToString((*(*_pMatrix)[2])[1]);
+			strTemp = FloatToString((*(*_pMatrix)[3])[1]);
 			SetDlgItemTextA(_hDlg, IDC_A_31, strTemp.c_str());
-			strTemp = FloatToString((*(*_pMatrix)[2])[2]);
+			strTemp = FloatToString((*(*_pMatrix)[3])[2]);
 			SetDlgItemTextA(_hDlg, IDC_A_32, strTemp.c_str());
-			strTemp = FloatToString((*(*_pMatrix)[2])[3]);
+			strTemp = FloatToString((*(*_pMatrix)[3])[3]);
 			SetDlgItemTextA(_hDlg, IDC_A_33, strTemp.c_str());
 
 		}
@@ -550,13 +550,13 @@ bool SetMatrix(HWND _hDlg, vector<vector<float>*>* _pMatrix, int _iChoice)
 			SetDlgItemTextA(_hDlg, IDC_B_23, strTemp.c_str());
 
 			//set the fourth row
-			strTemp = FloatToString((*(*_pMatrix)[2])[0]);
+			strTemp = FloatToString((*(*_pMatrix)[3])[0]);
 			SetDlgItemTextA(_hDlg, IDC_B_30, strTemp.c_str());
-			strTemp = FloatToString((*(*_pMatrix)[2])[1]);
+			strTemp = FloatToString((*(*_pMatrix)[3])[1]);
 			SetDlgItemTextA(_hDlg, IDC_B_31, strTemp.c_str());
-			strTemp = FloatToString((*(*_pMatrix)[2])[2]);
+			strTemp = FloatToString((*(*_pMatrix)[3])[2]);
 			SetDlgItemTextA(_hDlg, IDC_B_32, strTemp.c_str());
-			strTemp = FloatToString((*(*_pMatrix)[2])[3]);
+			strTemp = FloatToString((*(*_pMatrix)[3])[3]);
 			SetDlgItemTextA(_hDlg, IDC_B_33, strTemp.c_str());
 
 		}
@@ -594,13 +594,13 @@ bool SetMatrix(HWND _hDlg, vector<vector<float>*>* _pMatrix, int _iChoice)
 			SetDlgItemTextA(_hDlg, IDC_RESULT_23, strTemp.c_str());
 
 			//set the fourth row
-			strTemp = FloatToString((*(*_pMatrix)[2])[0]);
+			strTemp = FloatToString((*(*_pMatrix)[3])[0]);
 			SetDlgItemTextA(_hDlg, IDC_RESULT_30, strTemp.c_str());
-			strTemp = FloatToString((*(*_pMatrix)[2])[1]);
+			strTemp = FloatToString((*(*_pMatrix)[3])[1]);
 			SetDlgItemTextA(_hDlg, IDC_RESULT_31, strTemp.c_str());
-			strTemp = FloatToString((*(*_pMatrix)[2])[2]);
+			strTemp = FloatToString((*(*_pMatrix)[3])[2]);
 			SetDlgItemTextA(_hDlg, IDC_RESULT_32, strTemp.c_str());
-			strTemp = FloatToString((*(*_pMatrix)[2])[3]);
+			strTemp = FloatToString((*(*_pMatrix)[3])[3]);
 			SetDlgItemTextA(_hDlg, IDC_RESULT_33, strTemp.c_str());
 		}
 		break;
@@ -647,4 +647,153 @@ bool SetScalar(HWND _hDlg, int _iMatrixChoice, float* _pfResult)
 	}
 	
 	return (true);
+}
+
+
+bool SetToI(HWND _hDlg, int _iChoice)
+{
+
+	//create the matrix from given values 
+	vector<vector<float>*>* TheMatrixA = new vector<vector<float>*>;
+	vector<vector<float>*>* TheMatrixB = new vector<vector<float>*>;
+	vector<vector<float>*>* TheMatrix = new vector<vector<float>*>;
+	if (GetMatrix(_hDlg, TheMatrixA, TheMatrixB))
+	{
+		switch (_iChoice)
+		{
+			case A:
+			{
+				TheMatrix = TheMatrixA;
+			}
+			break;
+			case B:
+			{
+				TheMatrix = TheMatrixB;
+			}
+			break;
+		}
+
+		for (int iRow = 0; iRow < 4; iRow++)
+		{
+			for (int iCol = 0; iCol < 4; iCol++)
+			{
+				//diagonal down all equal ones the rest equal 0
+				if (iRow == iCol)
+				{
+					((*(*TheMatrix)[iRow])[iCol]) = 1;
+				}
+				else
+				{
+					((*(*TheMatrix)[iRow])[iCol]) = 0;
+				}
+			}
+			
+		}
+
+		//set text boxes using the matrix
+		SetMatrix(_hDlg, TheMatrix,_iChoice);
+		return true;
+	}
+	else
+	{
+		return false;
+	}
+
+
+
+}
+
+bool ScalarMultiply(HWND _hDlg, int _iChoice)
+{
+	float* fpScalar = new float;
+
+
+	//create the matrix from given values 
+	vector<vector<float>*>* TheMatrixA = new vector<vector<float>*>;
+	vector<vector<float>*>* TheMatrixB = new vector<vector<float>*>;
+	vector<vector<float>*>* TheMatrix = new vector<vector<float>*>;
+
+	
+
+	if (GetMatrix(_hDlg, TheMatrixA, TheMatrixB) && GetScalar(_hDlg,_iChoice, fpScalar))
+	{
+		switch (_iChoice)
+		{
+		case A:
+		{
+			TheMatrix = TheMatrixA;
+		}
+			break;
+		case B:
+		{
+			TheMatrix = TheMatrixB;
+		}
+			break;
+		}
+
+		for (int iRow = 0; iRow < 4; iRow++)
+		{
+			for (int iCol = 0; iCol < 4; iCol++)
+			{
+				//multiply every element by the scallar
+				((*(*TheMatrix)[iRow])[iCol]) = ((*(*TheMatrix)[iRow])[iCol]) * (*fpScalar);
+				
+			}
+
+		}
+
+		//set text boxes using the matrix
+		SetMatrix(_hDlg, TheMatrix, _iChoice);
+		return true;
+	}
+	else
+	{
+		return false;
+	}
+
+}
+
+bool Add(HWND _hDlg)
+{
+	//create the matrix from given values 
+	vector<vector<float>*>* TheMatrixA = new vector<vector<float>*>;
+	vector<vector<float>*>* TheMatrixB = new vector<vector<float>*>;
+	vector<vector<float>*>* TheMatrix = new vector<vector<float>*>;
+
+	vector<float>* tempRow = new vector<float>;
+
+	for (int iRow = 0; iRow < 4; iRow++)
+	{
+		for (int iCol = 0; iCol < 4; iCol++)
+		{
+			tempRow->push_back(0);
+		}
+		TheMatrix->push_back(tempRow);
+		tempRow = new vector<float>;
+	}
+
+
+	if (GetMatrix(_hDlg, TheMatrixA, TheMatrixB))
+	{
+		
+		for (int iRow = 0; iRow < 4; iRow++)
+		{
+			for (int iCol = 0; iCol < 4; iCol++)
+			{
+				((*(*TheMatrix)[iRow])[iCol]) = ((*(*TheMatrixA)[iRow])[iCol]) + ((*(*TheMatrixB)[iRow])[iCol]);
+			}
+
+		}
+
+		//set text boxes using the matrix
+		SetMatrix(_hDlg, TheMatrix, Result);
+		return true;
+	}
+	else
+	{
+		return false;
+	}
+
+
+
 }

@@ -38,10 +38,12 @@ BOOL CALLBACK DialogProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam)
 			}
 		case IDC_A_TO_I:
 			{
+				SetToI(hDlg, A);
 				break;
 			}
 		case IDC_B_TO_I:
 			{
+				SetToI(hDlg, B);
 				break;
 			}
 		case IDC_MAG_A:
@@ -70,14 +72,17 @@ BOOL CALLBACK DialogProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam)
 			}
 		case IDC_MULTIPLY_A:
 			{
+				ScalarMultiply(hDlg, A);
 				break;
 			}
 		case IDC_MULTIPLY_B:
 			{
+				ScalarMultiply(hDlg, B);
 				break;
 			}
 		case IDC_ADD:
 			{
+				Add(hDlg);
 				break;
 			}
 		case IDC_SUB:
