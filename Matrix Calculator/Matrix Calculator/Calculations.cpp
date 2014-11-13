@@ -396,6 +396,8 @@ bool GetMatrix(HWND _hDlg, vector<vector<float>*>* _pMatrixA,vector<vector<float
 			else
 			{
 				//invalid input found
+				MessageBox(_hDlg, TEXT("Error\n Invalid Input detected Please only enter numerical values"), TEXT("Error"), MB_ICONERROR | MB_OK);
+
 				return false;
 			}
 		}
@@ -455,6 +457,7 @@ bool GetScalar(HWND _hDlg, int _iMatrixChoice, float* _fpScalar)
 	}
 	else
 	{
+		MessageBox(_hDlg, TEXT("Error\n Invalid Input detected Please only enter numerical values"), TEXT("Error"), MB_ICONERROR | MB_OK);
 		return false;
 	}
 }
@@ -634,14 +637,14 @@ bool SetScalar(HWND _hDlg, int _iMatrixChoice, float* _pfResult)
 		{
 			//set the result Scalar text boxes
 			strTemp = FloatToString(*_pfResult);
-			SetDlgItemTextA(_hDlg, IDC_MAG_A, strTemp.c_str());
+			SetDlgItemTextA(_hDlg, IDC_A_MAG_RESULT, strTemp.c_str());
 		}
 		break;
 	case B:
 		{
 			//set the result Scalar text boxes
 			strTemp = FloatToString(*_pfResult);
-			SetDlgItemTextA(_hDlg, IDC_MAG_B, strTemp.c_str());
+			SetDlgItemTextA(_hDlg, IDC_B_MAG_RESULT, strTemp.c_str());
 		}
 		break;
 	}
@@ -649,8 +652,14 @@ bool SetScalar(HWND _hDlg, int _iMatrixChoice, float* _pfResult)
 	return (true);
 }
 
-
-bool SetToI(HWND _hDlg, int _iChoice)
+/***********************
+* SetToI: Set the choosen matrix tho the Identity Matrix
+* @author: Jc Fowles
+* @parameter: _hDlg: handle to the dialog box
+* @parameter: _iMatrixChoice: Which matrix are you working with A or B
+* @return: bool: return true, if no errors exist
+********************/
+bool SetToI(HWND _hDlg, int _iMatrixChoice)
 {
 
 	//create the matrix from given values 
@@ -659,7 +668,7 @@ bool SetToI(HWND _hDlg, int _iChoice)
 	vector<vector<float>*>* TheMatrix = new vector<vector<float>*>;
 	if (GetMatrix(_hDlg, TheMatrixA, TheMatrixB))
 	{
-		switch (_iChoice)
+		switch (_iMatrixChoice)
 		{
 			case A:
 			{
@@ -691,7 +700,7 @@ bool SetToI(HWND _hDlg, int _iChoice)
 		}
 
 		//set text boxes using the matrix
-		SetMatrix(_hDlg, TheMatrix,_iChoice);
+		SetMatrix(_hDlg, TheMatrix, _iMatrixChoice);
 		return true;
 	}
 	else
@@ -703,7 +712,14 @@ bool SetToI(HWND _hDlg, int _iChoice)
 
 }
 
-bool ScalarMultiply(HWND _hDlg, int _iChoice)
+/***********************
+* ScalarMultiply: Multiplies a choosen matrix by a given scalar
+* @author: Jc Fowles
+* @parameter: _hDlg: handle to the dialog box
+* @parameter: _iMatrixChoice: Which matrix are you working with A or B
+* @return: bool: return true, if no errors exist
+********************/
+bool ScalarMultiply(HWND _hDlg, int _iMatrixChoice)
 {
 	float* fpScalar = new float;
 
@@ -715,9 +731,9 @@ bool ScalarMultiply(HWND _hDlg, int _iChoice)
 
 	
 
-	if (GetMatrix(_hDlg, TheMatrixA, TheMatrixB) && GetScalar(_hDlg,_iChoice, fpScalar))
+	if (GetMatrix(_hDlg, TheMatrixA, TheMatrixB) && GetScalar(_hDlg, _iMatrixChoice, fpScalar))
 	{
-		switch (_iChoice)
+		switch (_iMatrixChoice)
 		{
 		case A:
 		{
@@ -743,7 +759,7 @@ bool ScalarMultiply(HWND _hDlg, int _iChoice)
 		}
 
 		//set text boxes using the matrix
-		SetMatrix(_hDlg, TheMatrix, _iChoice);
+		SetMatrix(_hDlg, TheMatrix, _iMatrixChoice);
 		return true;
 	}
 	else
@@ -753,6 +769,12 @@ bool ScalarMultiply(HWND _hDlg, int _iChoice)
 
 }
 
+/***********************
+* Add: Adds two matrices together 
+* @author: Jc Fowles
+* @parameter: _hDlg: handle to the dialog box
+* @return: bool: return true, if no errors exist
+********************/
 bool Add(HWND _hDlg)
 {
 	//create the matrix from given values 
@@ -794,6 +816,465 @@ bool Add(HWND _hDlg)
 		return false;
 	}
 
+}
+
+/***********************
+* Sub: Subtracts matrix B from Matrix A
+* @author: Jc Fowles
+* @parameter: _hDlg: handle to the dialog box
+* @return: bool: return true, if no errors exist
+********************/
+bool Sub(HWND _hDlg)
+{
+	//create the matrix from given values 
+	vector<vector<float>*>* TheMatrixA = new vector<vector<float>*>;
+	vector<vector<float>*>* TheMatrixB = new vector<vector<float>*>;
+	vector<vector<float>*>* TheMatrix = new vector<vector<float>*>;
+
+	vector<float>* tempRow = new vector<float>;
+
+	for (int iRow = 0; iRow < 4; iRow++)
+	{
+		for (int iCol = 0; iCol < 4; iCol++)
+		{
+			tempRow->push_back(0);
+		}
+		TheMatrix->push_back(tempRow);
+		tempRow = new vector<float>;
+	}
+
+	
+
+	if (GetMatrix(_hDlg, TheMatrixA, TheMatrixB))
+	{
+
+		for (int iRow = 0; iRow < 4; iRow++)
+		{
+			for (int iCol = 0; iCol < 4; iCol++)
+			{
+				((*(*TheMatrix)[iRow])[iCol]) = ((*(*TheMatrixA)[iRow])[iCol]) - ((*(*TheMatrixB)[iRow])[iCol]);
+			}
+
+		}
+
+		//set text boxes using the matrix
+		SetMatrix(_hDlg, TheMatrix, Result);
+		return true;
+	}
+	else
+	{
+		return false;
+	}
+
+	
+	
+	
+
+}
+
+/***********************
+* Transpose: Transposes the choosen Matrix
+* @author: Jc Fowles
+* @parameter: _hDlg: handle to the dialog box
+* @parameter: _iMatrixChoice: Which matrix are you working with A or B
+* @return: bool: return true, if no errors exist
+********************/
+bool Transpose(HWND _hDlg, int _iMatrixChoice)
+{
+	
+	//create the matrix from given values 
+	vector<vector<float>*>* TheMatrixA = new vector<vector<float>*>;
+	vector<vector<float>*>* TheMatrixB = new vector<vector<float>*>;
+	vector<vector<float>*>* TheMatrix = new vector<vector<float>*>;
+
+	vector<float>* tempRow = new vector<float>;
+
+	for (int iRow = 0; iRow < 4; iRow++)
+	{
+		for (int iCol = 0; iCol < 4; iCol++)
+		{
+			tempRow->push_back(0);
+		}
+		TheMatrix->push_back(tempRow);
+		tempRow = new vector<float>;
+	}
+
+	if (GetMatrix(_hDlg, TheMatrixA, TheMatrixB))
+	{
+		switch (_iMatrixChoice)
+		{
+		case A:
+		{
+			for (int iRow = 0; iRow < 4; iRow++)
+			{
+				for (int iCol = 0; iCol < 4; iCol++)
+				{
+					//Sets the rows to columns and columns to rows
+					((*(*TheMatrix)[iRow])[iCol]) = ((*(*TheMatrixA)[iCol])[iRow]);
+
+				}
+
+			}
+		}
+			break;
+		case B:
+		{
+			for (int iRow = 0; iRow < 4; iRow++)
+			{
+				for (int iCol = 0; iCol < 4; iCol++)
+				{
+					//Sets the rows to columns and columns to rows
+					((*(*TheMatrix)[iRow])[iCol]) = ((*(*TheMatrixB)[iCol])[iRow]);
+
+				}
+
+			}
+		}
+			break;
+		}
+
+		
+
+		//set text boxes using the matrix
+		SetMatrix(_hDlg, TheMatrix, _iMatrixChoice);
+		return true;
+	}
+	else
+	{
+		return false;
+	}
+}
+
+/***********************
+* Multiply: Transposes the choosen Matrix
+* @author: Jc Fowles
+* @parameter: _hDlg: handle to the dialog box
+* @parameter: _iMatrixChoice: Which matrix are you working with A or B
+* @return: bool: return true, if no errors exist
+********************/
+bool MatrixMultiply(HWND _hDlg, int _iMatrixChoice)
+{
+
+	//create the matrix from given values 
+	vector<vector<float>*>* TheMatrixA = new vector<vector<float>*>;
+	vector<vector<float>*>* TheMatrixB = new vector<vector<float>*>;
+	vector<vector<float>*>* TheMatrix = new vector<vector<float>*>;
+
+	vector<float>* tempRow = new vector<float>;
+
+	for (int iRow = 0; iRow < 4; iRow++)
+	{
+		for (int iCol = 0; iCol < 4; iCol++)
+		{
+			tempRow->push_back(0);
+		}
+		TheMatrix->push_back(tempRow);
+		tempRow = new vector<float>;
+	}
 
 
+
+	if (GetMatrix(_hDlg, TheMatrixA, TheMatrixB))
+	{
+
+		//int i = 0;
+		switch (_iMatrixChoice)
+		{
+		case A:
+		{
+			for (int iRow = 0; iRow < 4; iRow++)
+			{
+				for (int iCol = 0; iCol < 4; iCol++)
+				{
+					for (int i = 0; i < 4; i++)
+					{
+						((*(*TheMatrix)[iRow])[iCol]) += ((*(*TheMatrixA)[iRow])[i]) * ((*(*TheMatrixB)[i])[iCol]);
+					}
+					
+				}
+
+			}
+		}
+			break;
+		case B:
+		{
+			for (int iRow = 0; iRow < 4; iRow++)
+			{
+				for (int iCol = 0; iCol < 4; iCol++)
+				{
+					for (int i = 0; i < 4; i++)
+					{
+						((*(*TheMatrix)[iRow])[iCol]) += ((*(*TheMatrixB)[iRow])[i]) * ((*(*TheMatrixA)[i])[iCol]);
+					}
+				}
+
+			}
+		}
+			break;
+		}
+
+		
+
+		//set text boxes using the matrix
+		SetMatrix(_hDlg, TheMatrix, Result);
+		return true;
+	}
+	else
+	{
+		return false;
+	}
+
+
+
+}
+
+/***********************
+* Magnitude: Calculates the magnitude of the choosen matrix
+* @author: Jc Fowles
+* @parameter: _hDlg: handle to the dialog box
+* @parameter: _iMatrixChoice: Which matrix are you working with A or B
+* @return: bool: return true, if no errors exist
+********************/
+bool Magnitude(HWND _hDlg, int _iMatrixChoice)
+{
+	
+	//create the matrix from given values 
+	vector<vector<float>*>* TheMatrixA = new vector<vector<float>*>;
+	vector<vector<float>*>* TheMatrixB = new vector<vector<float>*>;
+	vector<vector<float>*>* TheMatrix = new vector<vector<float>*>;
+
+	float* pfMag = new float;
+	(*pfMag) = 0;
+	
+	if (GetMatrix(_hDlg, TheMatrixA, TheMatrixB) )
+	{
+		switch (_iMatrixChoice)
+		{
+		case A:
+		{
+			TheMatrix = TheMatrixA;
+		}
+			break;
+		case B:
+		{
+			TheMatrix = TheMatrixB;
+		}
+			break;
+		}
+		
+		(*pfMag) = Det(TheMatrix);
+
+		//set text boxes using the matrix
+		SetScalar(_hDlg, _iMatrixChoice, pfMag);
+		return true;
+	}
+	else
+	{
+		return false;
+	}
+}
+
+/***********************
+* Det: calculates The determinant of a given square matrix
+* @author: Jc Fowles
+* @parameter: _Matrix: given matrix to calculate determinant of
+* @return: float: determinant of a square given matrix
+********************/
+float Det(vector<vector<float>*>* _Matrix)
+{
+	vector<float> MatrixElement;
+
+	//base case
+	//if we have a 2x2 martix return ( ([0][0]*[1][1]) - ([0][1]*[1][0]) ) (the cofactor)
+	if ( ((*_Matrix)[0]->size()) == 2)
+	{
+		return ( (((*(*_Matrix)[0])[0]) * ((*(*_Matrix)[1])[1])) - (((*(*_Matrix)[0])[1]) * ((*(*_Matrix)[1])[0])) );
+	}
+	else
+	{
+		float fReturnVal = 0;
+		for (unsigned int i = 0; i < (*_Matrix)[0]->size(); i++)
+		{
+			vector<vector<float>*>* SmallerMatrix = new vector < vector<float>* > ;
+			vector<float>* tempRow = new vector<float>;
+
+			for (unsigned int iRow = 0; iRow < (*_Matrix)[0]->size(); iRow++)
+			{
+				for (unsigned int iCol = 0; iCol < (*_Matrix)[0]->size(); iCol++)
+				{
+					//check to disrigard the first row, and column i to create the smaller matrix
+					if ((iRow != 0) && (iCol != i))
+					{
+						tempRow->push_back(((*(*_Matrix)[iRow])[iCol]));
+					}
+					else if ((iRow == 0) )	//if we are on the first row save the value, matrix element value to be multiplied by the Deteminant of the smaller matrix being created
+					{
+						//negate the elemant in odd colomns in the matrix
+						if (iCol % 2) //i is odd)
+						{
+							MatrixElement.push_back((-1 * ((*(*_Matrix)[iRow])[iCol])));
+						}
+						else
+						{
+							MatrixElement.push_back(((*(*_Matrix)[iRow])[iCol]));
+						}
+					}
+				}
+				if (!(tempRow->empty()))
+				{
+					SmallerMatrix->push_back(tempRow);
+					tempRow = new vector<float>;
+				}
+			}
+			//recursion
+			//value to be return is the matrix element multiplied by the determinant of the smaller matrix
+			fReturnVal += MatrixElement[i] * Det(SmallerMatrix);
+		}
+		return fReturnVal;
+	}
+}
+
+/***********************
+* Inverse: Calculates the inverse of the choosen matrix
+* @author: Jc Fowles
+* @parameter: _hDlg: handle to the dialog box
+* @parameter: _iMatrixChoice: Which matrix are you working with A or B
+* @return: bool: return true, if no errors exist
+********************/
+bool Inverse(HWND _hDlg, int _iMatrixChoice)
+{
+	//create the matrix from given values 
+	vector<vector<float>*>* TheMatrixA = new vector<vector<float>*>;
+	vector<vector<float>*>* TheMatrixB = new vector<vector<float>*>;
+	vector<vector<float>*>* TheMatrix = new vector<vector<float>*>;
+
+	vector<vector<float>*>* TempMatrixA = new vector<vector<float>*>;
+
+	vector<float>* tempRow = new vector<float>;
+
+	float oneOverDet = 0;
+
+	for (int iRow = 0; iRow < 4; iRow++)
+	{
+		for (int iCol = 0; iCol < 4; iCol++)
+		{
+			tempRow->push_back(0);
+		}
+		TempMatrixA->push_back(tempRow);
+		tempRow = new vector<float>;
+	}
+
+	
+	if (GetMatrix(_hDlg, TheMatrixA, TheMatrixB))
+	{
+		switch (_iMatrixChoice)
+		{
+		case A:
+		{
+			TheMatrix = Cofactor(TheMatrixA);
+			oneOverDet = 1 / Det(TheMatrixA);
+		}
+			break;
+		case B:
+		{
+			TheMatrix = Cofactor(TheMatrixB);
+			oneOverDet = 1 / Det(TheMatrixB);
+		}
+			break;
+		}
+
+		for (unsigned int iRow = 0; iRow < 4; iRow++)
+		{
+			for (unsigned int iCol = 0; iCol < 4; iCol++)
+			{
+				((*(*TempMatrixA)[iRow])[iCol]) = ((*(*TheMatrix)[iCol])[iRow]);
+			}
+		}
+
+		
+
+		for (unsigned int iRow = 0; iRow < 4; iRow++)
+		{
+			for (unsigned int iCol = 0; iCol < 4; iCol++)
+			{
+				((*(*TempMatrixA)[iRow])[iCol]) = ((*(*TempMatrixA)[iRow])[iCol]) * oneOverDet;
+			}
+		}
+
+
+		//set text boxes using the matrix
+		SetMatrix(_hDlg, TempMatrixA, _iMatrixChoice);;
+		return true;
+	}
+	else
+	{
+		return false;
+	}
+
+	
+}
+
+vector<vector<float>*>* Cofactor(vector<vector<float>*>* _Matrix)
+{
+	vector<float> MatrixElement;
+	vector<vector<float>*>* TheMatrix = new vector<vector<float>*>;
+		
+	for (unsigned int i = 0; i < (*_Matrix)[0]->size(); i++)
+	{
+		vector<vector<float>*>* SmallerMatrix = new vector < vector<float>* >;
+		vector<float>* tempRowA = new vector<float>;
+
+		for (unsigned int iRow = 0; iRow < (*_Matrix)[0]->size(); iRow++)
+		{
+			for (unsigned int iCol = 0; iCol < (*_Matrix)[0]->size(); iCol++)
+			{
+				//check to disrigard the first row, and column i to create the smaller matrix
+				if ((iRow != 0) && (iCol != i))
+				{
+					tempRowA->push_back(((*(*_Matrix)[iRow])[iCol]));
+				}
+				else if ((iRow == 0))	//if we are on the first row save the value, matrix element value to be multiplied by the Deteminant of the smaller matrix being created
+				{
+					//negate the elemant in odd colomns in the matrix
+					if (iCol % 2) //i is odd)
+					{
+						MatrixElement.push_back(-1);
+					}
+					else
+					{
+						MatrixElement.push_back(1);
+					}
+				}
+			}
+			if (!(tempRowA->empty()))
+			{
+				SmallerMatrix->push_back(tempRowA);
+				tempRowA = new vector<float>;
+			}
+		}
+
+
+
+		vector<float>* tempRow = new vector<float>;
+
+		for (int iRow = 0; iRow < 4; iRow++)
+		{
+			for (int iCol = 0; iCol < 4; iCol++)
+			{
+				tempRow->push_back(0);
+			}
+			TheMatrix->push_back(tempRow);
+			tempRow = new vector<float>;
+		}
+		for (int iRow = 0; iRow < 4; iRow++)
+		{
+			for (int iCol = 0; iCol < 4; iCol++)
+			{
+				(*(*TheMatrix)[iRow])[iCol] = MatrixElement[i] * Det(SmallerMatrix);
+			}
+		}
+	
+	}
+
+	return TheMatrix;
 }

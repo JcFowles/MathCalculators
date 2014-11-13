@@ -69,6 +69,9 @@ bool Inverse(HWND _hDlg, int _iChoice);
 bool ScalarMultiply(HWND _hDlg, int _iChoice);
 
 //multiple matrix calculations
-bool Add(HWND _hDlge);
-bool Sub(HWND _hDlge);
-bool Sub(HWND _hDlge, int _Choice);
+bool Add(HWND _hDlg);
+bool Sub(HWND _hDlg);
+bool MatrixMultiply(HWND _hDlg, int _iChoice);
+
+float Det(vector<vector<float>*>* _Matrix);
+vector<vector<float>*>* Cofactor(vector<vector<float>*>* _Matrix);

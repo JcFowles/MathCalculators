@@ -48,26 +48,32 @@ BOOL CALLBACK DialogProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam)
 			}
 		case IDC_MAG_A:
 			{
+				Magnitude(hDlg, A);
 				break;
 			}
 		case IDC_MAG_B:
 			{
+				Magnitude(hDlg, B);
 				break;
 			}
 		case IDC_TRANS_A:
 			{
+				Transpose(hDlg, A);
 				break;
 			}
 		case IDC_TRANS_B:
 			{
+				Transpose(hDlg, B);
 				break;
 			}
 		case IDC_INVERSE_A:
 			{
+				Inverse(hDlg, A);
 				break;
 			}
 		case IDC_INVERSE_B:
 			{
+				Inverse(hDlg, B);
 				break;
 			}
 		case IDC_MULTIPLY_A:
@@ -87,14 +93,17 @@ BOOL CALLBACK DialogProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam)
 			}
 		case IDC_SUB:
 			{
+				Sub(hDlg);
 				break;
 			}
 		case IDC_AB:
 			{
+				MatrixMultiply(hDlg,A);
 				break;
 			}
 		case IDC_BA:
 			{
+				MatrixMultiply(hDlg, B);
 				break;
 			}
 	    }
