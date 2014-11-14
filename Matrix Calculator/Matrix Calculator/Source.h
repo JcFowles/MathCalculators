@@ -58,6 +58,7 @@ bool GetScalar(HWND _hDlg, int _iMatrixChoice, float* _fpScalar);
 
 //Set the matrices/scalar Text boxes
 bool SetMatrix(HWND _hDlg, vector<vector<float>*>* _pMatrix, int _iChoice);
+bool SetMatrixNA(HWND _hDlg, int _iChoice);
 bool SetScalar(HWND _hDlg, int _iMatrixChoice, float* _fpScalar);
 
 
@@ -74,4 +75,4 @@ bool Sub(HWND _hDlg);
 bool MatrixMultiply(HWND _hDlg, int _iChoice);
 
 float Det(vector<vector<float>*>* _Matrix);
-vector<vector<float>*>* Cofactor(vector<vector<float>*>* _Matrix);
+vector<vector<float>*>* Adj(vector<vector<float>*>* _Matrix);

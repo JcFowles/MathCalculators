@@ -467,7 +467,7 @@ bool GetScalar(HWND _hDlg, int _iMatrixChoice, float* _fpScalar)
 * @author: Jc Fowles
 * @parameter: _hDlg: handle to the dialog box
 * @parameter: _pMatrix: a pointer to the matrix which hold the values that we want to set the text boxes to
-* @parameter: _iChoice: the choice of which mtrix we working with
+* @parameter: _iChoice: which of the three matix text boxes to set
 * @return: bool: return true
 ********************/
 bool SetMatrix(HWND _hDlg, vector<vector<float>*>* _pMatrix, int _iChoice)
@@ -616,6 +616,104 @@ bool SetMatrix(HWND _hDlg, vector<vector<float>*>* _pMatrix, int _iChoice)
 	_pMatrix = 0;
 
 	return (true);
+
+}
+
+/***********************
+* SetMatrixNA: Sets the matrix text boxes to noInv
+* @author: Jc Fowles
+* @parameter: _hDlg: handle to the dialog box
+* @parameter: _iChoice: which of the 2 matix text boxes to set
+* @return: bool: return true
+********************/
+bool SetMatrixNA(HWND _hDlg, int _iChoice)
+{
+	string strTemp = "noInv";
+	switch(_iChoice)
+	{
+	case A:
+		{
+			//set the first row
+			
+			SetDlgItemTextA(_hDlg, IDC_A_00, strTemp.c_str());
+			SetDlgItemTextA(_hDlg, IDC_A_01, strTemp.c_str());
+			SetDlgItemTextA(_hDlg, IDC_A_02, strTemp.c_str());
+			SetDlgItemTextA(_hDlg, IDC_A_03, strTemp.c_str());
+
+			//set the Second row
+			
+			SetDlgItemTextA(_hDlg, IDC_A_10, strTemp.c_str());
+			SetDlgItemTextA(_hDlg, IDC_A_11, strTemp.c_str());
+			SetDlgItemTextA(_hDlg, IDC_A_12, strTemp.c_str());
+			SetDlgItemTextA(_hDlg, IDC_A_13, strTemp.c_str());
+
+			//set the Third row
+			SetDlgItemTextA(_hDlg, IDC_A_20, strTemp.c_str());
+			
+			SetDlgItemTextA(_hDlg, IDC_A_21, strTemp.c_str());
+			
+			SetDlgItemTextA(_hDlg, IDC_A_22, strTemp.c_str());
+			
+			SetDlgItemTextA(_hDlg, IDC_A_23, strTemp.c_str());
+
+			//set the fourth row
+			
+			SetDlgItemTextA(_hDlg, IDC_A_30, strTemp.c_str());
+			
+			SetDlgItemTextA(_hDlg, IDC_A_31, strTemp.c_str());
+			
+			SetDlgItemTextA(_hDlg, IDC_A_32, strTemp.c_str());
+			
+			SetDlgItemTextA(_hDlg, IDC_A_33, strTemp.c_str());
+
+		}
+		break;
+	case B:
+		{
+			//set the first row
+			
+			SetDlgItemTextA(_hDlg, IDC_B_00, strTemp.c_str());
+			
+			SetDlgItemTextA(_hDlg, IDC_B_01, strTemp.c_str());
+			
+			SetDlgItemTextA(_hDlg, IDC_B_02, strTemp.c_str());
+			
+			SetDlgItemTextA(_hDlg, IDC_B_03, strTemp.c_str());
+
+			//set the Second row
+			
+			SetDlgItemTextA(_hDlg, IDC_B_10, strTemp.c_str());
+			
+			SetDlgItemTextA(_hDlg, IDC_B_11, strTemp.c_str());
+			
+			SetDlgItemTextA(_hDlg, IDC_B_12, strTemp.c_str());
+			
+			SetDlgItemTextA(_hDlg, IDC_B_13, strTemp.c_str());
+
+			//set the Third row
+			
+			SetDlgItemTextA(_hDlg, IDC_B_20, strTemp.c_str());
+			
+			SetDlgItemTextA(_hDlg, IDC_B_21, strTemp.c_str());
+			
+			SetDlgItemTextA(_hDlg, IDC_B_22, strTemp.c_str());
+			
+			SetDlgItemTextA(_hDlg, IDC_B_23, strTemp.c_str());
+
+			//set the fourth row
+			
+			SetDlgItemTextA(_hDlg, IDC_B_30, strTemp.c_str());
+			
+			SetDlgItemTextA(_hDlg, IDC_B_31, strTemp.c_str());
+		
+			SetDlgItemTextA(_hDlg, IDC_B_32, strTemp.c_str());
+			
+			SetDlgItemTextA(_hDlg, IDC_B_33, strTemp.c_str());
+
+		}
+		break;
+	}
+	return true;
 
 }
 
@@ -1066,6 +1164,10 @@ bool Magnitude(HWND _hDlg, int _iMatrixChoice)
 
 		//set text boxes using the matrix
 		SetScalar(_hDlg, _iMatrixChoice, pfMag);
+
+		delete TheMatrix;
+		TheMatrix = 0;
+
 		return true;
 	}
 	else
@@ -1148,21 +1250,7 @@ bool Inverse(HWND _hDlg, int _iMatrixChoice)
 	vector<vector<float>*>* TheMatrixB = new vector<vector<float>*>;
 	vector<vector<float>*>* TheMatrix = new vector<vector<float>*>;
 
-	vector<vector<float>*>* TempMatrixA = new vector<vector<float>*>;
-
-	vector<float>* tempRow = new vector<float>;
-
 	float oneOverDet = 0;
-
-	for (int iRow = 0; iRow < 4; iRow++)
-	{
-		for (int iCol = 0; iCol < 4; iCol++)
-		{
-			tempRow->push_back(0);
-		}
-		TempMatrixA->push_back(tempRow);
-		tempRow = new vector<float>;
-	}
 
 	
 	if (GetMatrix(_hDlg, TheMatrixA, TheMatrixB))
@@ -1171,40 +1259,43 @@ bool Inverse(HWND _hDlg, int _iMatrixChoice)
 		{
 		case A:
 		{
-			TheMatrix = Cofactor(TheMatrixA);
-			oneOverDet = 1 / Det(TheMatrixA);
+			TheMatrix = Adj(TheMatrixA);
+			oneOverDet = Det(TheMatrixA);
 		}
 			break;
 		case B:
 		{
-			TheMatrix = Cofactor(TheMatrixB);
-			oneOverDet = 1 / Det(TheMatrixB);
+			TheMatrix = Adj(TheMatrixB);
+			oneOverDet = Det(TheMatrixB);
 		}
 			break;
 		}
 
-		for (unsigned int iRow = 0; iRow < 4; iRow++)
+		if(oneOverDet != 0) //if det is not 0 then inverse exists 
 		{
-			for (unsigned int iCol = 0; iCol < 4; iCol++)
+			oneOverDet = 1/oneOverDet;
+			for (unsigned int iRow = 0; iRow < 4; iRow++)
 			{
-				((*(*TempMatrixA)[iRow])[iCol]) = ((*(*TheMatrix)[iCol])[iRow]);
+				for (unsigned int iCol = 0; iCol < 4; iCol++)
+				{
+					((*(*TheMatrix)[iRow])[iCol]) = ((*(*TheMatrix)[iRow])[iCol]) * oneOverDet;
+				}
 			}
+
+
+			//set text boxes using the matrix
+			SetMatrix(_hDlg, TheMatrix, _iMatrixChoice);
+			return true;
 		}
-
-		
-
-		for (unsigned int iRow = 0; iRow < 4; iRow++)
+		else //inverse does not exist
 		{
-			for (unsigned int iCol = 0; iCol < 4; iCol++)
-			{
-				((*(*TempMatrixA)[iRow])[iCol]) = ((*(*TempMatrixA)[iRow])[iCol]) * oneOverDet;
-			}
+			SetMatrixNA(_hDlg, _iMatrixChoice);
+
+			delete TheMatrix;
+			TheMatrix = 0;
+
+			return true;
 		}
-
-
-		//set text boxes using the matrix
-		SetMatrix(_hDlg, TempMatrixA, _iMatrixChoice);;
-		return true;
 	}
 	else
 	{
@@ -1214,67 +1305,91 @@ bool Inverse(HWND _hDlg, int _iMatrixChoice)
 	
 }
 
-vector<vector<float>*>* Cofactor(vector<vector<float>*>* _Matrix)
+/***********************
+* Adj: Calculates the adjoint of the given matrix
+* @author: Jc Fowles
+* @parameter: _Matrix: the matrix to calculate the adjoint of
+* @return: vector<vector<float>*>* : pointer to the adjoint matrix
+********************/
+vector<vector<float>*>* Adj(vector<vector<float>*>* _Matrix)
 {
-	vector<float> MatrixElement;
+
 	vector<vector<float>*>* TheMatrix = new vector<vector<float>*>;
-		
-	for (unsigned int i = 0; i < (*_Matrix)[0]->size(); i++)
+	vector<vector<float>*>* TransMatrix = new vector<vector<float>*>;
+	vector<float>* tempRowA = new vector<float>;
+
+	//initialises two 4x4 matrices
+	for (int iRow = 0; iRow < 4; iRow++)
 	{
-		vector<vector<float>*>* SmallerMatrix = new vector < vector<float>* >;
-		vector<float>* tempRowA = new vector<float>;
-
-		for (unsigned int iRow = 0; iRow < (*_Matrix)[0]->size(); iRow++)
+		for (int iCol = 0; iCol < 4; iCol++)
 		{
-			for (unsigned int iCol = 0; iCol < (*_Matrix)[0]->size(); iCol++)
-			{
-				//check to disrigard the first row, and column i to create the smaller matrix
-				if ((iRow != 0) && (iCol != i))
-				{
-					tempRowA->push_back(((*(*_Matrix)[iRow])[iCol]));
-				}
-				else if ((iRow == 0))	//if we are on the first row save the value, matrix element value to be multiplied by the Deteminant of the smaller matrix being created
-				{
-					//negate the elemant in odd colomns in the matrix
-					if (iCol % 2) //i is odd)
-					{
-						MatrixElement.push_back(-1);
-					}
-					else
-					{
-						MatrixElement.push_back(1);
-					}
-				}
-			}
-			if (!(tempRowA->empty()))
-			{
-				SmallerMatrix->push_back(tempRowA);
-				tempRowA = new vector<float>;
-			}
+			tempRowA->push_back(0);
 		}
-
-
-
-		vector<float>* tempRow = new vector<float>;
-
-		for (int iRow = 0; iRow < 4; iRow++)
-		{
-			for (int iCol = 0; iCol < 4; iCol++)
-			{
-				tempRow->push_back(0);
-			}
-			TheMatrix->push_back(tempRow);
-			tempRow = new vector<float>;
-		}
-		for (int iRow = 0; iRow < 4; iRow++)
-		{
-			for (int iCol = 0; iCol < 4; iCol++)
-			{
-				(*(*TheMatrix)[iRow])[iCol] = MatrixElement[i] * Det(SmallerMatrix);
-			}
-		}
+		TheMatrix->push_back(tempRowA);
+		tempRowA = new vector<float>;
+	}
 	
+	for (int iRow = 0; iRow < 4; iRow++)
+	{
+		for (int iCol = 0; iCol < 4; iCol++)
+		{
+			tempRowA->push_back(0);
+		}
+		TransMatrix->push_back(tempRowA);
+		tempRowA = new vector<float>;
+	}
+	
+	for (unsigned int i = 0; i < 4; i++)
+	{
+		for (unsigned int j = 0; j < 4; j++)
+		{
+			vector<vector<float>*>* SmallerMatrix = new vector < vector<float>* >;
+			vector<float>* tempRow = new vector<float>;
+			//get the minor matrix of each element in the matrix
+			for (unsigned int iRow = 0; iRow < 4; iRow++)
+			{
+				if(iRow != i)
+				{
+					for (unsigned int iCol = 0; iCol < 4; iCol++)
+					{
+						if (iCol != j)
+						{
+							tempRow->push_back(((*(*_Matrix)[iRow])[iCol]));
+						}
+					}
+				}
+				if (!(tempRow->empty()))
+				{
+					SmallerMatrix->push_back(tempRow);
+					tempRow = new vector<float>;
+				}
+
+			}
+			//each element in the matrix become the determinant of its minor matrix
+			//and when i + j = and odd number multiply by -1, to get its cofactor matrix
+			if ((i + j) % 2) //i is odd)
+			{
+				(*(*TheMatrix)[i])[j] = -1 * Det(SmallerMatrix);
+			}
+			else
+			{
+				(*(*TheMatrix)[i])[j] =  Det(SmallerMatrix);
+			}
+			
+		}
 	}
 
-	return TheMatrix;
+	//Translate the matrix to get the adjoint matrix
+	for (unsigned int iRow = 0; iRow < 4; iRow++)
+	{
+		for (unsigned int iCol = 0; iCol < 4; iCol++)
+		{
+			(*(*TransMatrix)[iRow])[iCol] = (*(*TheMatrix)[iCol])[iRow];
+		}
+	}
+
+	delete TheMatrix;
+	TheMatrix = 0;
+	
+	return TransMatrix;
 }
