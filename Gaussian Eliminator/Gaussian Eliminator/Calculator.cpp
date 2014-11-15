@@ -180,37 +180,6 @@ bool Initialise(HWND _hDlg)
 }
 
 /***********************
-* Initialise: Initialises all values in the matrix to a random value (atm Initialises to 1 instead)
-* @author: Jc Fowles
-* @parameter: _hDlg: Handle to the dialog box
-* @return: bool: true if no error errors exist, else pop up the error to be fixed via message box
-********************/
-bool RandomInitialise(HWND _hDlg)
-{
-	vector<vector<float>*>* TheMatrix = new vector<vector<float>*>;
-
-	//create the matrix from given values 
-	CreateMatrix(_hDlg, TheMatrix);
-
-	float fRandom;
-
-	for (int i = 0; i < 4; i++)
-	{
-		for (int k = 0; k < 3; k++)
-		{
-			fRandom = 1.0f; //change this to a random number between 1.0 and 10.0 , atm just 1 lol
-			((*(*TheMatrix)[k])[i]) = fRandom;
-		}
-	}
-
-	//set text boxes using the matrix
-	SetTextBox(_hDlg, TheMatrix);
-
-	return (true);
-}
-
-
-/***********************
 * CreateStrMatrix: creates a matrix, with the values in the form of strings
 * @author: Jc Fowles
 * @parameter: _hDlg: Handle to the dialog box

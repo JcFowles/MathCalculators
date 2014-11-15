@@ -620,104 +620,6 @@ bool SetMatrix(HWND _hDlg, vector<vector<float>*>* _pMatrix, int _iChoice)
 }
 
 /***********************
-* SetMatrixNA: Sets the matrix text boxes to noInv
-* @author: Jc Fowles
-* @parameter: _hDlg: handle to the dialog box
-* @parameter: _iChoice: which of the 2 matix text boxes to set
-* @return: bool: return true
-********************/
-bool SetMatrixNA(HWND _hDlg, int _iChoice)
-{
-	string strTemp = "noInv";
-	switch(_iChoice)
-	{
-	case A:
-		{
-			//set the first row
-			
-			SetDlgItemTextA(_hDlg, IDC_A_00, strTemp.c_str());
-			SetDlgItemTextA(_hDlg, IDC_A_01, strTemp.c_str());
-			SetDlgItemTextA(_hDlg, IDC_A_02, strTemp.c_str());
-			SetDlgItemTextA(_hDlg, IDC_A_03, strTemp.c_str());
-
-			//set the Second row
-			
-			SetDlgItemTextA(_hDlg, IDC_A_10, strTemp.c_str());
-			SetDlgItemTextA(_hDlg, IDC_A_11, strTemp.c_str());
-			SetDlgItemTextA(_hDlg, IDC_A_12, strTemp.c_str());
-			SetDlgItemTextA(_hDlg, IDC_A_13, strTemp.c_str());
-
-			//set the Third row
-			SetDlgItemTextA(_hDlg, IDC_A_20, strTemp.c_str());
-			
-			SetDlgItemTextA(_hDlg, IDC_A_21, strTemp.c_str());
-			
-			SetDlgItemTextA(_hDlg, IDC_A_22, strTemp.c_str());
-			
-			SetDlgItemTextA(_hDlg, IDC_A_23, strTemp.c_str());
-
-			//set the fourth row
-			
-			SetDlgItemTextA(_hDlg, IDC_A_30, strTemp.c_str());
-			
-			SetDlgItemTextA(_hDlg, IDC_A_31, strTemp.c_str());
-			
-			SetDlgItemTextA(_hDlg, IDC_A_32, strTemp.c_str());
-			
-			SetDlgItemTextA(_hDlg, IDC_A_33, strTemp.c_str());
-
-		}
-		break;
-	case B:
-		{
-			//set the first row
-			
-			SetDlgItemTextA(_hDlg, IDC_B_00, strTemp.c_str());
-			
-			SetDlgItemTextA(_hDlg, IDC_B_01, strTemp.c_str());
-			
-			SetDlgItemTextA(_hDlg, IDC_B_02, strTemp.c_str());
-			
-			SetDlgItemTextA(_hDlg, IDC_B_03, strTemp.c_str());
-
-			//set the Second row
-			
-			SetDlgItemTextA(_hDlg, IDC_B_10, strTemp.c_str());
-			
-			SetDlgItemTextA(_hDlg, IDC_B_11, strTemp.c_str());
-			
-			SetDlgItemTextA(_hDlg, IDC_B_12, strTemp.c_str());
-			
-			SetDlgItemTextA(_hDlg, IDC_B_13, strTemp.c_str());
-
-			//set the Third row
-			
-			SetDlgItemTextA(_hDlg, IDC_B_20, strTemp.c_str());
-			
-			SetDlgItemTextA(_hDlg, IDC_B_21, strTemp.c_str());
-			
-			SetDlgItemTextA(_hDlg, IDC_B_22, strTemp.c_str());
-			
-			SetDlgItemTextA(_hDlg, IDC_B_23, strTemp.c_str());
-
-			//set the fourth row
-			
-			SetDlgItemTextA(_hDlg, IDC_B_30, strTemp.c_str());
-			
-			SetDlgItemTextA(_hDlg, IDC_B_31, strTemp.c_str());
-		
-			SetDlgItemTextA(_hDlg, IDC_B_32, strTemp.c_str());
-			
-			SetDlgItemTextA(_hDlg, IDC_B_33, strTemp.c_str());
-
-		}
-		break;
-	}
-	return true;
-
-}
-
-/***********************
 * SetScalar: Sets scalar(Magnitude) text box 
 * @author: Jc Fowles
 * @parameter: _hDlg: handle to the dialog box
@@ -1069,13 +971,11 @@ bool MatrixMultiply(HWND _hDlg, int _iMatrixChoice)
 		TheMatrix->push_back(tempRow);
 		tempRow = new vector<float>;
 	}
-
-
+	
 
 	if (GetMatrix(_hDlg, TheMatrixA, TheMatrixB))
 	{
 
-		//int i = 0;
 		switch (_iMatrixChoice)
 		{
 		case A:
@@ -1088,9 +988,7 @@ bool MatrixMultiply(HWND _hDlg, int _iMatrixChoice)
 					{
 						((*(*TheMatrix)[iRow])[iCol]) += ((*(*TheMatrixA)[iRow])[i]) * ((*(*TheMatrixB)[i])[iCol]);
 					}
-					
 				}
-
 			}
 		}
 			break;
@@ -1121,9 +1019,7 @@ bool MatrixMultiply(HWND _hDlg, int _iMatrixChoice)
 	{
 		return false;
 	}
-
-
-
+	
 }
 
 /***********************
@@ -1289,7 +1185,10 @@ bool Inverse(HWND _hDlg, int _iMatrixChoice)
 		}
 		else //inverse does not exist
 		{
-			SetMatrixNA(_hDlg, _iMatrixChoice);
+			Initialise(_hDlg);
+
+			MessageBox(_hDlg, TEXT("No inverse exists!"), TEXT("No Inverse"), MB_ICONERROR | MB_OK);
+
 
 			delete TheMatrix;
 			TheMatrix = 0;

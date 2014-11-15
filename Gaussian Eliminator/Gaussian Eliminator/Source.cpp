@@ -32,11 +32,7 @@ BOOL CALLBACK DialogProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam)
 		//buttons
 	    switch(LOWORD(wParam))
 	    {
-		case IDC_RANDOM:
-			{
-				RandomInitialise(hDlg);
-				break;
-			}	
+		
 		case IDC_APPLY_MUTLIPY:
 			{
 				if (RowInputCheck(hDlg, 1))
@@ -97,34 +93,7 @@ BOOL CALLBACK DialogProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam)
 				}
 				break;
 			}
-		case IDC_APPLY_ALL:
-			{
-				if( (RowInputCheck(hDlg, 1)) &&
-					(RowInputCheck(hDlg, 2)) &&
-					(RowInputCheck(hDlg, 3)) )
-				{
-					if(GaussianMultiply(hDlg))
-					{
-						if(GaussianSwap(hDlg))
-						{
-							GaussianAdd(hDlg);
-						}
-					}
-				}
-				if (EchelonCheck(hDlg))
-				{
-					if(ReducedEchelonCheck(hDlg))
-					{
-						MessageBox(hDlg, TEXT("Reduced Row Echelon"), TEXT("Reduced Row Echelon"), MB_ICONEXCLAMATION | MB_OK);
-					}
-					else
-					{
-						MessageBox(hDlg, TEXT("Row Echelon"), TEXT("Row Echelon"), MB_ICONEXCLAMATION | MB_OK);
-					}
 
-				}
-				break;
-			}
 		}
 		break;
 		// closing the window

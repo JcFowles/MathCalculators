@@ -14,16 +14,25 @@
 
 #pragma once
 
+const float PI_OVR_180 = (3.14159265f/180.0f);
+
+const int SCALE = 0;
+const int SKEWING = 1;
+const int TRANSLATE = 2;
+const int ROTATION = 3;
+const int PROJECTION = 4;
 
 
 //librarty includes 
 #include <iostream>
-#include <string>
+#include <cstring>
 #include <sstream>
 #include <Windows.h>
 #include <tchar.h>
 #include <vector>
 #include <algorithm>
+#include <stack>
+#include <queue>
 
 //local includes
 #include "resource.h"
@@ -31,11 +40,9 @@
 //namespace
 using namespace std;
 
-
-
 //functions Prototypes 
 //Inisialise Value in Text boxes
-bool Initialise(HWND _hDlg);
+bool Initialise(HWND _hDlg, HWND _ComboBox);
 
 //Input checks
 bool InputCheck(string &_str);
@@ -48,25 +55,19 @@ string WideStringToString(const wchar_t* _kpwstr);
 //Get Matrices from the text boxes
 bool GetStrMatrix(HWND _hDlg, vector<vector<string>*>* _pMatrixA,vector<vector<string>*>* _pMatrixB);
 bool GetMatrix(HWND _hDlg, vector<vector<float>*>* _pMatrixA,vector<vector<float>*>* _pMatrixB);
-bool GetScalar(HWND _hDlg, int _iMatrixChoice, float* _fpScalar);
+bool GetVector(HWND _hDlg, int _iChoice, vector<float>* _fpScalar);
 
 //Set the matrices/scalar Text boxes
-bool SetMatrix(HWND _hDlg, vector<vector<float>*>* _pMatrix, int _iChoice);
+bool SetMatrix(HWND _hDlg, vector<vector<float>*>* _pRowMatrix, vector<vector<float>*>* _pColMatrix);
 bool SetMatrixNA(HWND _hDlg, int _iChoice);
-bool SetScalar(HWND _hDlg, int _iMatrixChoice, float* _fpScalar);
+
+//Transformations
+bool SetToI(HWND _hDlg);
+vector<vector<float>*>* Scale(HWND _hDlg);
+vector<vector<float>*>* Skew(HWND _hDlg);
+vector<vector<float>*>* Translate(HWND _hDlg);
+vector<vector<float>*>* Rotate(HWND _hDlg);
+vector<vector<float>*>* Projection(HWND _hDlg);
 
 
-//single matrix calculations
-bool SetToI(HWND _hDlg, int _iChoice);
-bool Magnitude(HWND _hDlg, int _iChoice);
-bool Transpose(HWND _hDlg, int _iChoice);
-bool Inverse(HWND _hDlg, int _iChoice);
-bool ScalarMultiply(HWND _hDlg, int _iChoice);
 
-//multiple matrix calculations
-bool Add(HWND _hDlg);
-bool Sub(HWND _hDlg);
-bool MatrixMultiply(HWND _hDlg, int _iChoice);
-
-float Det(vector<vector<float>*>* _Matrix);
-vector<vector<float>*>* Adj(vector<vector<float>*>* _Matrix);

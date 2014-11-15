@@ -11,12 +11,13 @@
 * Author :	Jc Fowles
 * Mail :	Jc.Fowles@mediadesign.school.nz	
 */
-
+#pragma once
 //local includes
-#include "resource.h"
 #include "Source.h"
 
 HWND g_ComboBox;
+stack<int> g_TStack;
+TCHAR g_strQueue[256] = _T("");
 
 /***********************
 * DialogProc: Process the Dialog Box 
@@ -29,24 +30,171 @@ HWND g_ComboBox;
 ********************/
 BOOL CALLBACK DialogProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
+	
 	switch(uMsg)
 	{
 	case WM_COMMAND:
-	    switch(LOWORD(wParam))
-	    {
-		case IDC_COMPUTE:
+		{
+			switch(HIWORD(wParam))
 			{
-				SendMessage(hDlg, WM_CLOSE, 0, 0);
-				return TRUE;
-			}
-			break;
-		case CBN_SELENDOK:
-			{
+			case ((CBN_SELENDOK)):
+				{
 
+					TCHAR temp[256];
+					//Get the selected choice from the combo box
+					int iIndex = SendMessage(g_ComboBox,  CB_GETCURSEL, 0, 0);
+					g_TStack.push(iIndex);
+					SendMessage(g_ComboBox,CB_GETLBTEXT , (WPARAM)(iIndex), (LPARAM)temp);
+					_tcscat_s(temp, _T("\r\n"));
+					_tcscat_s(g_strQueue, temp);
+									
+					//Print the selected choice to a seprate text box
+					SetDlgItemText(hDlg, IDC_Q, (LPCWSTR)g_strQueue);
+
+				}
+				break;
 			}
-			break;
+
+			switch(LOWORD(wParam))
+			{
+			case ((IDC_COMPUTE)):
+				{
+					//get the two matrices, this is only to used to create the matrix in 4x4, no need for the data
+					vector<vector<float>*>* TheRowMatrix = new vector<vector<float>*>;
+					vector<vector<float>*>* TheColMatrix = new vector<vector<float>*>;
+					GetMatrix(hDlg,TheRowMatrix,TheColMatrix);
+
+					//store the identity matrix in the combined to start with
+					vector<vector<float>*>* TheCombineMatrix = new vector<vector<float>*>;
+					vector<float>* tempRow = new vector<float>;
+					for (int iRow = 0; iRow < 4; iRow++)
+					{
+						for (int iCol = 0; iCol < 4; iCol++)
+						{
+							if(iRow == iCol)
+							{
+								tempRow->push_back(1);
+							}
+							else
+							{
+								tempRow->push_back(0);
+							}
+						}
+						TheCombineMatrix->push_back(tempRow);
+						tempRow = new vector<float>;
+					}
+
+					//if no choice was selected print out the identity matrix
+					if(g_TStack.empty())
+					{
+						SetToI(hDlg);
+					}
+					else
+					{
+						while(!(g_TStack.empty()))
+						{
+							//create a temparary matrix to store the result
+							vector<vector<float>*>* TheTempMatrix = new vector<vector<float>*>;
+							vector<float>* tempRowA = new vector<float>;
+							for (int iRow = 0; iRow < 4; iRow++)
+							{
+								for (int iCol = 0; iCol < 4; iCol++)
+								{
+									tempRowA->push_back(0);
+								}
+								TheTempMatrix->push_back(tempRowA);
+								tempRowA = new vector<float>;
+							}
+
+							//decide what Transformation 
+							switch(g_TStack.top())
+							{
+							case SCALE:
+								{
+									TheRowMatrix = Scale(hDlg);									
+								}
+								break;
+							case SKEWING:
+								{
+									TheRowMatrix = Skew(hDlg);
+								}
+								break;
+							case TRANSLATE:
+								{
+									TheRowMatrix = Translate(hDlg);
+								}
+								break;
+							case ROTATION:
+								{
+									TheRowMatrix = Rotate(hDlg);
+								}
+								break;
+							case PROJECTION:
+								{
+									TheRowMatrix = Projection(hDlg);
+								}
+								break;
+							}
+							
+							//Multiply the new Matrix with the current combined 
+							for (int iRow = 0; iRow < 4; iRow++)
+							{
+								for (int iCol = 0; iCol < 4; iCol++)
+								{
+									for (int i = 0; i < 4; i++)
+									{
+										((*(*TheTempMatrix)[iRow])[iCol]) += ((*(*TheCombineMatrix)[iRow])[i]) * ((*(*TheRowMatrix)[i])[iCol]);
+									}
+								}
+							}
+
+							delete TheCombineMatrix;
+							TheCombineMatrix = TheTempMatrix;
+							
+							//pop the stack then loop again
+							g_TStack.pop();
+
+						}
+
+						delete TheRowMatrix;
+						TheRowMatrix = TheCombineMatrix;
+						
+						for (int iRow = 0; iRow < 4; iRow++)
+						{
+							for (int iCol = 0; iCol < 4; iCol++)
+							{
+								((*(*TheColMatrix)[iRow])[iCol]) = 	((*(*TheRowMatrix)[iCol])[iRow]);
+							}
+		
+						}
+
+						//set text boxes using the matrix
+						SetMatrix(hDlg, TheRowMatrix, TheColMatrix);
+						TCHAR reset[] = _T("");
+
+						_tcscpy_s(g_strQueue,reset);
+						SetDlgItemText(hDlg, IDC_Q, (LPCWSTR)g_strQueue);
+						
+						//memory Clean up
+						for(int i = 0; i < 4; i++)
+						{
+							delete (*TheRowMatrix)[i];
+							delete (*TheColMatrix)[i];
+							(*TheRowMatrix)[i] = 0;
+							(*TheColMatrix)[i] = 0;
+													
+						}
+						delete TheRowMatrix;
+						delete TheColMatrix;
+						TheRowMatrix = 0;
+						TheColMatrix = 0;
+					}
+				}
+				break;
+			}
 		}
 		break;
+	
 	
 
 	case WM_CLOSE:
@@ -83,24 +231,12 @@ int WINAPI _tWinMain(HINSTANCE hInst, HINSTANCE h0, LPTSTR lpCmdLine, int nCmdSh
 	HWND hDlg;
 	MSG msg;
 	BOOL ret;
-	LPTSTR Scaling = L"Scaling";
-	LPTSTR Skewing = L"Skewing";
-	LPTSTR Translation = L"Translation";
-	LPTSTR Rotation = L"Rotation";
-	LPTSTR Projection = L"Projection";
-
-	hDlg = CreateDialogParam(hInst, MAKEINTRESOURCE(IDD_TRANSFORMATION), 0, DialogProc, 0);
-	//Initialise(hDlg);
-	ShowWindow(hDlg, nCmdShow);
-
-	g_ComboBox = GetDlgItem(hDlg, IDC_COMBO);
 	
-	SendMessage(g_ComboBox, CB_ADDSTRING, 0, (LPARAM)(Scaling));
-	SendMessage(g_ComboBox, CB_ADDSTRING, 0, (LPARAM)(Skewing));
-	SendMessage(g_ComboBox, CB_ADDSTRING, 0, (LPARAM)(Translation));
-	SendMessage(g_ComboBox, CB_ADDSTRING, 0, (LPARAM)(Rotation));
-	SendMessage(g_ComboBox, CB_ADDSTRING, 0, (LPARAM)(Projection));
-
+	hDlg = CreateDialogParam(hInst, MAKEINTRESOURCE(IDD_TRANSFORMATION), 0, DialogProc, 0);
+	g_ComboBox = GetDlgItem(hDlg, IDC_COMBO);
+	Initialise(hDlg,g_ComboBox);
+	ShowWindow(hDlg, nCmdShow);
+	
 	while((ret = GetMessage(&msg, 0, 0, 0)) != 0)
 	{
 		if(ret == -1)
