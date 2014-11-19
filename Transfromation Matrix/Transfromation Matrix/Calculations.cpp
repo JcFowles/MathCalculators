@@ -79,8 +79,21 @@ bool Initialise(HWND _hDlg, HWND _ComboBox)
 	SetDlgItemTextA( _hDlg, IDC_COL_32,strTemp.c_str());
 	SetDlgItemTextA( _hDlg, IDC_COL_33,strTemp.c_str());
 
-	
+	SetDlgItemTextA( _hDlg, IDC_SCALE,strTemp.c_str());
+	SetDlgItemTextA( _hDlg, IDC_SKEW_X,strTemp.c_str());
+	SetDlgItemTextA( _hDlg, IDC_SKEW_Y,strTemp.c_str());
+	SetDlgItemTextA( _hDlg, IDC_SKEW_Z,strTemp.c_str());
 
+	SetDlgItemTextA( _hDlg, IDC_TRANSLATE_X,strTemp.c_str());
+	SetDlgItemTextA( _hDlg, IDC_TRANSLATE_Y,strTemp.c_str());
+	SetDlgItemTextA( _hDlg, IDC_TRANSLATE_Z,strTemp.c_str());
+
+	SetDlgItemTextA( _hDlg, IDC_ROTATION_X,strTemp.c_str());
+	SetDlgItemTextA( _hDlg, IDC_ROTATION_Y,strTemp.c_str());
+	SetDlgItemTextA( _hDlg, IDC_ROTATION_Z,strTemp.c_str());
+	SetDlgItemTextA( _hDlg, IDC_ROTATION_ANGLE,strTemp.c_str());
+	
+	SetDlgItemTextA( _hDlg, IDC_PROJECTION_D,strTemp.c_str());
 
 	return (true);
 }
@@ -162,7 +175,11 @@ float WideStringToFloat(const wchar_t* _kpwstr)
 	wcstombs_s(&convertedChars, pStr, stringLength, _kpwstr, _TRUNCATE);
 
 	//convert to string to float using string_to_float
-	return (stof(pStr));
+	float fReturn = stof(pStr);
+	delete pStr;
+	pStr = 0;
+
+	return (fReturn);
 }
 
 /***********************
@@ -192,7 +209,11 @@ string WideStringToString(const wchar_t* _kpwstr)
 	//convert _kpwstr into pStr
 	wcstombs_s(&convertedChars, pStr, stringLength, _kpwstr, _TRUNCATE);
 	
-	return pStr;
+	string sReturn = pStr;
+	delete pStr;
+	pStr = 0;
+
+	return sReturn;
 }
 
 /***********************
@@ -387,6 +408,24 @@ bool GetMatrix(HWND _hDlg, vector<vector<float>*>* _pMatrixA,vector<vector<float
 				//invalid input found
 				MessageBox(_hDlg, TEXT("Error\n Invalid Input detected Please only enter numerical values"), TEXT("Error"), MB_ICONERROR | MB_OK);
 
+				while(!(strMatrixA->empty()))
+				{
+					delete strMatrixA->back();
+					strMatrixA->back() = 0;
+					strMatrixA->pop_back();
+				}
+				delete strMatrixA;
+				strMatrixA = 0;
+
+				while(!(strMatrixB->empty()))
+				{
+					delete strMatrixB->back();
+					strMatrixB->back() = 0;
+					strMatrixB->pop_back();
+				}
+				delete strMatrixB;
+				strMatrixB = 0;
+
 				return false;
 			}
 		}
@@ -400,6 +439,25 @@ bool GetMatrix(HWND _hDlg, vector<vector<float>*>* _pMatrixA,vector<vector<float
 		vpfTempB = new vector<float>;
 	}
 
+	while(!(strMatrixA->empty()))
+	{
+		delete strMatrixA->back();
+		strMatrixA->back() = 0;
+		strMatrixA->pop_back();
+	}
+	delete strMatrixA;
+	strMatrixA = 0;
+
+	while(!(strMatrixB->empty()))
+	{
+		delete strMatrixB->back();
+		strMatrixB->back() = 0;
+		strMatrixB->pop_back();
+	}
+	delete strMatrixB;
+	strMatrixB = 0;
+
+	
 	return true;
 }
 
@@ -424,14 +482,12 @@ bool GetVector(HWND _hDlg, int _iChoice, vector<float>* _fpScalar)
 	{
 	case SCALE:
 		{
-			//Get the Scalar value
 			GetDlgItemText(_hDlg, IDC_SCALE, wstrTempA, 100);
 			(strScalar).push_back(WideStringToString(wstrTempA));	
 		}
 		break;
 	case SKEWING:
 		{
-			//Get the Scalar value
 			GetDlgItemText(_hDlg, IDC_SKEW_X, wstrTempA, 100);
 			(strScalar).push_back(WideStringToString(wstrTempA));	
 			GetDlgItemText(_hDlg, IDC_SKEW_Y, wstrTempA, 100);
@@ -442,7 +498,6 @@ bool GetVector(HWND _hDlg, int _iChoice, vector<float>* _fpScalar)
 		break;
 	case TRANSLATE:
 		{
-			//Get the Scalar value
 			GetDlgItemText(_hDlg, IDC_TRANSLATE_X, wstrTempA, 100);
 			(strScalar).push_back(WideStringToString(wstrTempA));	
 			GetDlgItemText(_hDlg, IDC_TRANSLATE_Y, wstrTempA, 100);
@@ -453,7 +508,6 @@ bool GetVector(HWND _hDlg, int _iChoice, vector<float>* _fpScalar)
 		break;
 	case ROTATION:
 		{
-			//Get the Scalar value
 			GetDlgItemText(_hDlg, IDC_ROTATION_X, wstrTempA, 100);
 			(strScalar).push_back(WideStringToString(wstrTempA));	
 			GetDlgItemText(_hDlg, IDC_ROTATION_Y, wstrTempA, 100);
@@ -466,13 +520,29 @@ bool GetVector(HWND _hDlg, int _iChoice, vector<float>* _fpScalar)
 		break;
 	case PROJECTION:
 		{
-			//Get the Scalar value
-			GetDlgItemText(_hDlg, IDC_PROJECTION_X, wstrTempA, 100);
-			(strScalar).push_back(WideStringToString(wstrTempA));	
-			GetDlgItemText(_hDlg, IDC_PROJECTION_Y, wstrTempA, 100);
-			(strScalar).push_back(WideStringToString(wstrTempA));
-			GetDlgItemText(_hDlg, IDC_PROJECTION_Z, wstrTempA, 100);
-			(strScalar).push_back(WideStringToString(wstrTempA));
+			if(IsDlgButtonChecked(_hDlg, IDC_AXIS_X) == BST_CHECKED)
+			{
+				// x axis
+				(strScalar).push_back("1");	  
+				(strScalar).push_back("0");	
+				(strScalar).push_back("0");	
+					
+			}
+			else if(IsDlgButtonChecked(_hDlg, IDC_AXIS_Y) == BST_CHECKED)
+			{
+				// y axis
+				(strScalar).push_back("0");	  
+				(strScalar).push_back("1");	
+				(strScalar).push_back("0");
+			}
+			else if(IsDlgButtonChecked(_hDlg, IDC_AXIS_Z) == BST_CHECKED)
+			{
+				// z axis
+				(strScalar).push_back("0");	  
+				(strScalar).push_back("0");	
+				(strScalar).push_back("1");
+			}
+			//get distance
 			GetDlgItemText(_hDlg, IDC_PROJECTION_D, wstrTempA, 100);
 			(strScalar).push_back(WideStringToString(wstrTempA));
 		}
@@ -589,10 +659,25 @@ bool SetMatrix(HWND _hDlg, vector<vector<float>*>* _pRowMatrix, vector<vector<fl
 	strTemp = FloatToString((*(*_pColMatrix)[3])[3]);
 	SetDlgItemTextA(_hDlg, IDC_COL_33, strTemp.c_str());
 
-	delete _pRowMatrix;
-	_pRowMatrix = 0;
-	delete _pColMatrix;
-	_pColMatrix = 0;
+	/*while(!(_pRowMatrix->empty()))
+	{
+		delete _pRowMatrix->back();
+		_pRowMatrix->back() = 0;
+		_pRowMatrix->pop_back();
+	}*/
+
+	/*delete _pRowMatrix;
+	_pRowMatrix = 0;*/
+
+	/*while(!(_pColMatrix->empty()))
+	{
+		delete _pColMatrix->back();
+		_pColMatrix->back() = 0;
+		_pColMatrix->pop_back();
+	}
+*/
+	/*delete _pColMatrix;
+	_pColMatrix = 0;*/
 
 	return (true);
 
@@ -687,7 +772,8 @@ vector<vector<float>*>* Scale(HWND _hDlg)
 		((*(*TheColMatrix)[3])[3]) = 1;
 
 		//set text boxes using the matrix
-		//SetMatrix(_hDlg, TheRowMatrix, TheColMatrix);
+		//return TheRowMatrix;
+		SetMatrix(_hDlg, TheRowMatrix, TheColMatrix);
 		return TheRowMatrix;
 	}
 	else
@@ -737,7 +823,7 @@ vector<vector<float>*>* Skew(HWND _hDlg)
 		((*(*TheColMatrix)[3])[3]) = 1;
 
 		//set text boxes using the matrix
-		//SetMatrix(_hDlg, TheRowMatrix, TheColMatrix);
+		SetMatrix(_hDlg, TheRowMatrix, TheColMatrix);
 		return TheRowMatrix;
 	}
 	else
@@ -799,7 +885,7 @@ vector<vector<float>*>* Translate(HWND _hDlg)
 		((*(*TheColMatrix)[3])[3]) = 1;
 
 		//set text boxes using the matrix
-		//SetMatrix(_hDlg, TheRowMatrix, TheColMatrix);
+		SetMatrix(_hDlg, TheRowMatrix, TheColMatrix);
 		return TheRowMatrix;
 	}
 	else
@@ -867,15 +953,16 @@ vector<vector<float>*>* Rotate(HWND _hDlg)
 						}
 						else if(iRow == iCol ) 
 						{
-							((*(*TheRowMatrix)[iRow])[iCol]) =  cos(fScalar[3]*PI_OVR_180 );
+
+							((*(*TheRowMatrix)[iRow])[iCol]) = static_cast<float>( floor((cos(fScalar[3]*PI_OVR_180 ))*1000+0.5)/1000 );
 						}
 						else if((iRow == 1) && (iCol == 2))
 						{
-							((*(*TheRowMatrix)[iRow])[iCol]) =  sin(fScalar[3]*PI_OVR_180);
+							((*(*TheRowMatrix)[iRow])[iCol]) =  static_cast<float>( floor((sin(fScalar[3]*PI_OVR_180 ))*1000+0.5)/1000 );
 						}
 						else if((iRow == 2) && (iCol == 1))
 						{
-							((*(*TheRowMatrix)[iRow])[iCol]) = -1 * sin(fScalar[3]*PI_OVR_180);
+							((*(*TheRowMatrix)[iRow])[iCol]) =  static_cast<float>(floor((-1 * sin(fScalar[3]*PI_OVR_180))*1000+0.5)/1000 );
 						}
 						else
 						{
@@ -900,16 +987,16 @@ vector<vector<float>*>* Rotate(HWND _hDlg)
 							}
 							else
 							{
-								((*(*TheRowMatrix)[iRow])[iCol]) =  cos(fScalar[3]*PI_OVR_180);
+								((*(*TheRowMatrix)[iRow])[iCol]) =  static_cast<float>( floor((cos(fScalar[3]*PI_OVR_180 ))*1000+0.5)/1000 );
 							}
 						}
 						else if((iRow == 0) && (iCol == 2))
 						{
-							((*(*TheRowMatrix)[iRow])[iCol]) =  -1 * sin(fScalar[3]*PI_OVR_180);
+							((*(*TheRowMatrix)[iRow])[iCol]) =  static_cast<float>(floor((-1 * sin(fScalar[3]*PI_OVR_180))*1000+0.5)/1000 );
 						}
 						else if((iRow == 2) && (iCol == 0))
 						{
-							((*(*TheRowMatrix)[iRow])[iCol]) =  sin(fScalar[3]*PI_OVR_180);
+							((*(*TheRowMatrix)[iRow])[iCol]) =   static_cast<float>(floor((sin(fScalar[3]*PI_OVR_180 ))*1000+0.5)/1000 );
 						}
 						else
 						{
@@ -934,16 +1021,16 @@ vector<vector<float>*>* Rotate(HWND _hDlg)
 							}
 							else
 							{
-								((*(*TheRowMatrix)[iRow])[iCol]) =  cos(fScalar[3]*PI_OVR_180);
+								((*(*TheRowMatrix)[iRow])[iCol]) =  static_cast<float>( floor((cos(fScalar[3]*PI_OVR_180 ))*1000+0.5)/1000 );
 							}
 						}
 						else if((iRow == 0) && (iCol == 1))
 						{
-							((*(*TheRowMatrix)[iRow])[iCol]) =  sin(fScalar[3]*PI_OVR_180);
+							((*(*TheRowMatrix)[iRow])[iCol]) =  static_cast<float>(floor((sin(fScalar[3]*PI_OVR_180 ))*1000+0.5)/1000) ;
 						}
 						else if((iRow == 1) && (iCol == 0))
 						{
-							((*(*TheRowMatrix)[iRow])[iCol]) = -1 * sin(fScalar[3]*PI_OVR_180);
+							((*(*TheRowMatrix)[iRow])[iCol]) =  static_cast<float>(floor((-1 * sin(fScalar[3]*PI_OVR_180))*1000+0.5)/1000 );
 						}
 						else
 						{
@@ -967,7 +1054,7 @@ vector<vector<float>*>* Rotate(HWND _hDlg)
 		}
 
 		//set text boxes using the matrix
-		//SetMatrix(_hDlg, TheRowMatrix, TheColMatrix);
+		SetMatrix(_hDlg, TheRowMatrix, TheColMatrix);
 		return TheRowMatrix;
 	}
 	else
@@ -1050,6 +1137,64 @@ vector<vector<float>*>* Projection(HWND _hDlg)
 			}
 			break;
 		}
+		
+		
+		for (int iRow = 0; iRow < 4; iRow++)
+		{
+			for (int iCol = 0; iCol < 4; iCol++)
+			{
+				((*(*TheColMatrix)[iRow])[iCol]) = 	((*(*TheRowMatrix)[iCol])[iRow]);
+			}
+		
+		}
+
+		//set text boxes using the matrix
+		SetMatrix(_hDlg, TheRowMatrix, TheColMatrix);
+		return TheRowMatrix;
+	}
+	else
+	{
+		return 0;
+	}
+}
+
+vector<vector<float>*>* RotateA(HWND _hDlg)
+{
+	//create the matrix from given values 
+	vector<vector<float>*>* TheRowMatrix = new vector<vector<float>*>;
+	vector<vector<float>*>* TheColMatrix = new vector<vector<float>*>;
+	vector<float> fScalar;
+	if (GetMatrix(_hDlg, TheRowMatrix, TheColMatrix) && GetVector(_hDlg,ROTATION,&fScalar))
+	{
+		float fVersine = (1 - cos(fScalar[3]*PI_OVR_180));
+		float fCosine = (cos(fScalar[3]*PI_OVR_180));
+		float fSine = (sin(fScalar[3]*PI_OVR_180));
+		float fX = fScalar[0];
+		float fY = fScalar[1];
+		float fZ = fScalar[2];
+
+		//first Row
+		((*(*TheRowMatrix)[0])[0]) = static_cast<float>(floor(((fVersine * (fX * fX) + fCosine))*1000+0.5)/1000);
+		((*(*TheRowMatrix)[0])[1]) = static_cast<float>(floor(((fVersine * (fX * fY) + (fSine * fZ)))*1000+0.5)/1000); 
+		((*(*TheRowMatrix)[0])[2]) = static_cast<float>(floor((fVersine * (fX * fZ) - (fSine * fY))*1000+0.5)/1000 ); 
+
+		//Second Row
+		((*(*TheRowMatrix)[1])[0]) = static_cast<float>(floor((fVersine * (fY * fX) - (fSine * fZ))*1000+0.5)/1000 );
+		((*(*TheRowMatrix)[1])[1]) = static_cast<float>(floor((fVersine * (fY * fY) + fCosine)*1000+0.5)/1000 ); 
+		((*(*TheRowMatrix)[1])[2]) = static_cast<float>(floor((fVersine * (fY * fZ) + (fSine * fX))*1000+0.5)/1000 ); 
+		((*(*TheRowMatrix)[1])[3]) = 0;
+
+		//Third Row
+		((*(*TheRowMatrix)[2])[0]) = static_cast<float>(floor((fVersine * (fZ * fX) + (fSine * fY))*1000+0.5)/1000 );
+		((*(*TheRowMatrix)[2])[1]) = static_cast<float>(floor((fVersine * (fZ * fY) - (fSine * fX))*1000+0.5)/1000 ); 
+		((*(*TheRowMatrix)[2])[2]) = static_cast<float>(floor((fVersine * (fZ * fZ) + fCosine)*1000+0.5)/1000 ); 
+		((*(*TheRowMatrix)[2])[3]) = 0;
+
+		//ForthRow
+		((*(*TheRowMatrix)[3])[0]) = 0;
+		((*(*TheRowMatrix)[3])[1]) = 0;
+		((*(*TheRowMatrix)[3])[2]) = 0;
+		((*(*TheRowMatrix)[3])[3]) = 1;
 		
 		
 		for (int iRow = 0; iRow < 4; iRow++)

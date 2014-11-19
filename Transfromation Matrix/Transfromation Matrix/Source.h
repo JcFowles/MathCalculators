@@ -33,6 +33,7 @@ const int PROJECTION = 4;
 #include <algorithm>
 #include <stack>
 #include <queue>
+#include <math.h>
 
 //local includes
 #include "resource.h"
@@ -67,6 +68,7 @@ vector<vector<float>*>* Scale(HWND _hDlg);
 vector<vector<float>*>* Skew(HWND _hDlg);
 vector<vector<float>*>* Translate(HWND _hDlg);
 vector<vector<float>*>* Rotate(HWND _hDlg);
+vector<vector<float>*>* RotateA(HWND _hDlg);
 vector<vector<float>*>* Projection(HWND _hDlg);
 
 

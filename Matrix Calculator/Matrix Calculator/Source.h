@@ -76,3 +76,6 @@ bool MatrixMultiply(HWND _hDlg, int _iChoice);
 
 float Det(vector<vector<float>*>* _Matrix);
 vector<vector<float>*>* Adj(vector<vector<float>*>* _Matrix);
+
+void deleteMatrix(vector<vector<float>*>* _Matrix);
+void deleteMatrix(vector<vector<string>*>* _Matrix);

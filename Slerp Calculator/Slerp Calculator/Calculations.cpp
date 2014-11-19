@@ -144,7 +144,11 @@ float WideStringToFloat(const wchar_t* _kpwstr)
 	wcstombs_s(&convertedChars, pStr, stringLength, _kpwstr, _TRUNCATE);
 
 	//convert to string to float using string_to_float
-	return (stof(pStr));
+	float fReturn = stof(pStr);
+	delete pStr;
+	pStr = 0;
+
+	return (fReturn);
 }
 
 /***********************
@@ -174,7 +178,11 @@ string WideStringToString(const wchar_t* _kpwstr)
 	//convert _kpwstr into pStr
 	wcstombs_s(&convertedChars, pStr, stringLength, _kpwstr, _TRUNCATE);
 	
-	return pStr;
+	string strReturn = pStr;
+	delete pStr;
+	pStr = 0;
+
+	return strReturn;
 }
 
 /***********************
@@ -255,8 +263,7 @@ bool GetQuaternion(HWND _hDlg, vector<float>* _pfQuatA, vector<float>* _pfQuatB,
 	{
 		//check if inputs are valid floats
 		if(InputCheck((*pStrTempQuatA)[i]) &&
-		   InputCheck((*pStrTempQuatB)[i]) &&
-		   InputCheck((*pStrTempQuatSlerp)[i]))
+		   InputCheck((*pStrTempQuatB)[i]) )
 		{
 			//convert to flaots and push onto the float vector
 			(*_pfQuatA).push_back(stof((*pStrTempQuatA)[i]));
@@ -404,6 +411,12 @@ bool setResult(HWND _hDlg, vector<vector<float>*>* _pfMatrix)
 	SetDlgItemTextA(_hDlg, IDC_MATRIX_33, strTemp.c_str());
 
 	//delete the matrix no longer required
+	while(!(_pfMatrix->empty()))
+	{
+		delete _pfMatrix->back();
+		_pfMatrix->back() = 0;
+		_pfMatrix->pop_back();
+	}
 	delete _pfMatrix;
 	_pfMatrix = 0;
 
@@ -510,11 +523,16 @@ bool slerp(HWND _hDlg)
 	
 	setResult(_hDlg, pfQuatSlerp);
 
+	//clean up
 	delete pfQuatA;
 	pfQuatA  = 0 ;
 	delete pfQuatB;
 	pfQuatB = 0;
-
+	delete pfNormQuatA;
+	pfNormQuatA = 0;
+	delete pfNormQuatB;
+	pfNormQuatB = 0;
+	
 	return (true);
 }
 
@@ -533,22 +551,23 @@ bool Matrix(HWND _hDlg, int _iChoice)
 	vector<float>* pfQuatB = new vector<float>;
 	vector<float>* pfQuatSlerp = new vector<float>;
 
-	vector<float>* pfTempQuat = new vector<float>;
+	vector<float>* pfTemp = new vector<float>;
 
 	//The resultant quaternion
 	vector<vector<float>*>* pfMatrix =  new vector<vector<float>*>;
+	//pfMatrix[4][4];
 	
 	for(int i = 0; i < 4 ; i++)
 	{
 		for(int k = 0; k < 4 ; k++)
 		{
-			(*pfTempQuat).push_back(0.0f);
+			(*pfTemp).push_back(0.0f);
 		}
-		(*pfMatrix).push_back(pfTempQuat);
-		pfTempQuat = new vector<float>;
+		(*pfMatrix).push_back(pfTemp);
+		pfTemp = new vector<float>;
 	}
-	//float* pfMatrix[4][4];
-	pfTempQuat = new vector<float>;
+		
+	vector<float>* pfTempQuat = 0;
 	
 	//gets the Quaternions
 	if(GetQuaternion(_hDlg, pfQuatA, pfQuatB, pfQuatSlerp) )
@@ -558,16 +577,28 @@ bool Matrix(HWND _hDlg, int _iChoice)
 		case A: // Queternion A
 			{
 				pfTempQuat = pfQuatA;
+				delete pfQuatB;
+				pfQuatB = 0;
+				delete pfQuatSlerp;
+				pfQuatSlerp = 0;
 			}
 			break; 
 		case B: // Queternion B
 			{
 				pfTempQuat = pfQuatB;
+				delete pfQuatA;
+				pfQuatA = 0;
+				delete pfQuatSlerp;
+				pfQuatSlerp = 0;
 			}
 			break;
 		case SLERP:  //SLERP result Quaternion 
 			{
 				pfTempQuat = pfQuatSlerp;
+				delete pfQuatA;
+				pfQuatA = 0;
+				delete pfQuatB;
+				pfQuatB = 0;
 			}
 			break;
 		}
@@ -653,17 +684,14 @@ bool Matrix(HWND _hDlg, int _iChoice)
 	}
 
 	setResult(_hDlg, pfMatrix);
-	
-	delete pfQuatA;
-	delete pfQuatB;
-	delete pfQuatSlerp;
-//	delete pfTempQuat; 
 
-	pfQuatA = 0;
-	pfQuatB = 0;
-	pfQuatSlerp = 0;
-//	pfTempQuat = 0;
+	//delete pfMatrix;
+	//pfMatrix = 0;
 
-
+	delete pfTemp; 
+	pfTemp = 0;
+	delete pfTempQuat; 
+	pfTempQuat = 0;
+		
 	return (true);
 }

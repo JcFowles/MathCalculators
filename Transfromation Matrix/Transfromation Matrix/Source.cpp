@@ -14,6 +14,7 @@
 #pragma once
 //local includes
 #include "Source.h"
+//#include "vld.h"
 
 HWND g_ComboBox;
 stack<int> g_TStack;
@@ -126,7 +127,7 @@ BOOL CALLBACK DialogProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam)
 								break;
 							case ROTATION:
 								{
-									TheRowMatrix = Rotate(hDlg);
+									TheRowMatrix = RotateA(hDlg);
 								}
 								break;
 							case PROJECTION:
@@ -148,12 +149,26 @@ BOOL CALLBACK DialogProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam)
 								}
 							}
 
+							while(!(TheCombineMatrix->empty()))
+							{
+								delete TheCombineMatrix->back();
+								TheCombineMatrix->back() = 0;
+								TheCombineMatrix->pop_back();
+							}
 							delete TheCombineMatrix;
 							TheCombineMatrix = TheTempMatrix;
 							
 							//pop the stack then loop again
 							g_TStack.pop();
 
+							
+						}
+
+						while(!(TheRowMatrix->empty()))
+						{
+							delete TheRowMatrix->back();
+							TheRowMatrix->back() = 0;
+							TheRowMatrix->pop_back();
 						}
 
 						delete TheRowMatrix;
@@ -176,18 +191,34 @@ BOOL CALLBACK DialogProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam)
 						SetDlgItemText(hDlg, IDC_Q, (LPCWSTR)g_strQueue);
 						
 						//memory Clean up
-						for(int i = 0; i < 4; i++)
+						/*while(!(TheRowMatrix->empty()))
 						{
-							delete (*TheRowMatrix)[i];
-							delete (*TheColMatrix)[i];
-							(*TheRowMatrix)[i] = 0;
-							(*TheColMatrix)[i] = 0;
-													
+							delete TheRowMatrix->back();
+							TheRowMatrix->back() = 0;
+							TheRowMatrix->pop_back();
 						}
 						delete TheRowMatrix;
-						delete TheColMatrix;
 						TheRowMatrix = 0;
-						TheColMatrix = 0;
+						
+						while(!(TheColMatrix->empty()))
+						{
+							delete TheColMatrix->back();
+							TheColMatrix->back() = 0;
+							TheColMatrix->pop_back();
+						}
+						delete TheColMatrix;
+						TheColMatrix = 0;*/
+
+						while(!(TheCombineMatrix->empty()))
+						{
+							delete TheCombineMatrix->back();
+							TheCombineMatrix->back() = 0;
+							TheCombineMatrix->pop_back();
+						}
+						delete TheCombineMatrix;
+						TheCombineMatrix = 0;
+
+						
 					}
 				}
 				break;

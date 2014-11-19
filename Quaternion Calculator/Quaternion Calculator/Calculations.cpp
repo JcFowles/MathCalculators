@@ -123,7 +123,11 @@ float WideStringToFloat(const wchar_t* _kpwstr)
 	wcstombs_s(&convertedChars, pStr, stringLength, _kpwstr, _TRUNCATE);
 
 	//convert to string to float using string_to_float
-	return (stof(pStr));
+	float fReturn = stof(pStr);
+	delete pStr;
+	pStr = 0;
+
+	return (fReturn);
 }
 
 /***********************
@@ -153,7 +157,11 @@ string WideStringToString(const wchar_t* _kpwstr)
 	//convert _kpwstr into pStr
 	wcstombs_s(&convertedChars, pStr, stringLength, _kpwstr, _TRUNCATE);
 	
-	return pStr;
+	string strReturn = pStr;
+	delete pStr;
+	pStr = 0;
+
+	return strReturn;
 }
 
 /***********************
@@ -809,6 +817,15 @@ bool Inverse(HWND _hDlg, int _iChoice)
 	{
 
 		MessageBox(_hDlg, TEXT("Invalid Input Found in Quaternions"), TEXT("ERROR"), MB_ICONSTOP | MB_OK);
+		delete pfQuatA;
+		pfQuatA = 0;
+		delete pfQuatB;
+		pfQuatB = 0;
+		delete pfconjugate;
+		pfconjugate = 0;
+		delete pfResult;
+		pfResult = 0;
+	
 		return false;
 	}
 
@@ -817,6 +834,10 @@ bool Inverse(HWND _hDlg, int _iChoice)
 	pfQuatA = 0;
 	delete pfQuatB;
 	pfQuatB = 0;
+	delete pfconjugate;
+	pfconjugate = 0;
+	delete pfResult;
+	pfResult = 0;
 	
 	return (true);
 }

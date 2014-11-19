@@ -50,8 +50,25 @@ bool GaussianMultiply(HWND _hDlg)
 	{
 
 		MessageBox(_hDlg, TEXT("Invalid Input Found in Matrix"), TEXT("ERROR"), MB_ICONSTOP | MB_OK);
+		while(!(TheMatrix->empty()))
+		{
+			delete TheMatrix->back();
+			TheMatrix->back() = 0;
+			TheMatrix->pop_back();
+		}
+		delete TheMatrix;
+		TheMatrix =  0;
 		return false;
 	}
+	while(!(TheMatrix->empty()))
+		{
+			delete TheMatrix->back();
+			TheMatrix->back() = 0;
+			TheMatrix->pop_back();
+		}
+		delete TheMatrix;
+		TheMatrix =  0;
+
 	return (true);
 	
 }
@@ -92,8 +109,24 @@ bool GaussianSwap(HWND _hDlg)
 	else //could not create the matrix because invalid input was found
 	{
 		MessageBox(_hDlg, TEXT("Invalid Input Found in Matrix"), TEXT("ERROR"), MB_ICONSTOP | MB_OK);
+		while(!(TheMatrix->empty()))
+		{
+			delete TheMatrix->back();
+			TheMatrix->back() = 0;
+			TheMatrix->pop_back();
+		}
+		delete TheMatrix;
+		TheMatrix =  0;
 		return false;
 	}
+	while(!(TheMatrix->empty()))
+		{
+			delete TheMatrix->back();
+			TheMatrix->back() = 0;
+			TheMatrix->pop_back();
+		}
+		delete TheMatrix;
+		TheMatrix =  0;
 	return (true);
 }
 
@@ -133,9 +166,24 @@ bool GaussianAdd(HWND _hDlg)
 	else //could not create the matrix because invalid input was found
 	{
 		MessageBox(_hDlg, TEXT("Invalid Input Found in Matrix"), TEXT("ERROR"), MB_ICONSTOP | MB_OK);
+		while(!(TheMatrix->empty()))
+		{
+			delete TheMatrix->back();
+			TheMatrix->back() = 0;
+			TheMatrix->pop_back();
+		}
+		delete TheMatrix;
+		TheMatrix =  0;
 		return false;
 	}
-
+	while(!(TheMatrix->empty()))
+		{
+			delete TheMatrix->back();
+			TheMatrix->back() = 0;
+			TheMatrix->pop_back();
+		}
+		delete TheMatrix;
+		TheMatrix =  0;
 	return (true);
 }
 
@@ -194,6 +242,7 @@ bool CreateStrMatrix(HWND _hDlg, vector<vector<string>*>* strMatrix)
 		
 	//First row enter into the matrix
 	GetDlgItemText(_hDlg, IDC_MATRIX_00, wstrTempA, 100);
+
 	(*vpstrTemp).push_back((WideStringToString(wstrTempA)));		
 
 	GetDlgItemText(_hDlg, IDC_MATRIX_01, wstrTempA, 100);
@@ -246,7 +295,7 @@ bool CreateStrMatrix(HWND _hDlg, vector<vector<string>*>* strMatrix)
 	//add the temp row to the matrix
 	(*strMatrix).push_back(vpstrTemp);
 	
-			
+		
 	return (true);
 
 }
@@ -290,6 +339,19 @@ bool CreateMatrix(HWND _hDlg, vector<vector<float>*>* _fMatrix)
 		//clear the temp row
 		vpfTemp = new vector<float>;
 	}
+
+	delete vpfTemp;
+	vpfTemp = 0;
+
+	while(!(strMatrix->empty()))
+	{
+		delete strMatrix->back();
+		strMatrix->back() = 0;
+		strMatrix->pop_back();
+	}
+
+	delete strMatrix;
+	strMatrix = 0;
 
 	return true;
 	
@@ -337,8 +399,18 @@ bool SetTextBox(HWND _hDlg, vector<vector<float>*>* _fMatrix)
 	SetDlgItemTextA(_hDlg, IDC_MATRIX_23, strTemp.c_str());
 
 	//delete the matrix no longer required
+	while(!(_fMatrix->empty()))
+	{
+		delete _fMatrix->back();
+		_fMatrix->back() = 0;
+		_fMatrix->pop_back();
+	}
 	delete _fMatrix;
-	_fMatrix = 0;
+	_fMatrix =  0;
+
+	
+	//delete _fMatrix;
+	//_fMatrix = 0;
 
 	return (true);
 }
@@ -519,7 +591,11 @@ float WideStringToFloat(const wchar_t* _kpwstr)
 	wcstombs_s(&convertedChars, pStr, stringLength, _kpwstr, _TRUNCATE);
 
 	//convert to string to float using string_to_float
-	return (stof(pStr));
+	float fReturn = stof(pStr);
+	delete pStr;
+	pStr = 0;
+
+	return (fReturn);
 }
 
 /***********************
@@ -549,7 +625,11 @@ string WideStringToString(const wchar_t* _kpwstr)
 	//convert _kpwstr into pStr
 	wcstombs_s(&convertedChars, pStr, stringLength, _kpwstr, _TRUNCATE);
 	
-	return pStr;
+	string StrReturn = pStr;
+	delete pStr;
+	pStr = 0;
+
+	return StrReturn;
 }
 
 

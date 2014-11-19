@@ -14,6 +14,7 @@
 
 //local includes
 #include "Source.h"
+#include "vld.h"
 
 /***********************
 * DialogProc: Process the Dialog Box 

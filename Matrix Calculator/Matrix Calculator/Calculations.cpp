@@ -175,6 +175,10 @@ float WideStringToFloat(const wchar_t* _kpwstr)
 	wcstombs_s(&convertedChars, pStr, stringLength, _kpwstr, _TRUNCATE);
 
 	//convert to string to float using string_to_float
+	float fReturn = stof(pStr);
+	delete pStr;
+	pStr = 0;
+
 	return (stof(pStr));
 }
 
@@ -205,7 +209,11 @@ string WideStringToString(const wchar_t* _kpwstr)
 	//convert _kpwstr into pStr
 	wcstombs_s(&convertedChars, pStr, stringLength, _kpwstr, _TRUNCATE);
 	
-	return pStr;
+	string sReturn = pStr;
+	delete pStr;
+	pStr = 0;
+
+	return sReturn;
 }
 
 /***********************
@@ -357,7 +365,7 @@ bool GetStrMatrix(HWND _hDlg, vector<vector<string>*>* _pMatrixA,vector<vector<s
 	//add the temp row to the matrix
 	(*_pMatrixA).push_back(vpstrTempA);
 	(*_pMatrixB).push_back(vpstrTempB);
-
+	
 	return (true);
 }
 
@@ -371,11 +379,6 @@ bool GetStrMatrix(HWND _hDlg, vector<vector<string>*>* _pMatrixA,vector<vector<s
 ********************/
 bool GetMatrix(HWND _hDlg, vector<vector<float>*>* _pMatrixA,vector<vector<float>*>* _pMatrixB)
 {
-
-//temp matrix row
-	vector<float>* vpfTempA = new vector<float>;
-	vector<float>* vpfTempB = new vector<float>;
-
 	//creates a string matrix
 	vector<vector<string>*>* strMatrixA = new vector<vector<string>*>;
 	vector<vector<string>*>* strMatrixB = new vector<vector<string>*>;
@@ -383,6 +386,8 @@ bool GetMatrix(HWND _hDlg, vector<vector<float>*>* _pMatrixA,vector<vector<float
 
 	for(int iRow = 0; iRow < 4; iRow++)
 	{
+		vector<float>* vpfTempA = new vector<float>;
+		vector<float>* vpfTempB = new vector<float>;
 		for(int iColumn = 0; iColumn < 4; iColumn++)
 		{
 			//check if valid input
@@ -397,7 +402,10 @@ bool GetMatrix(HWND _hDlg, vector<vector<float>*>* _pMatrixA,vector<vector<float
 			{
 				//invalid input found
 				MessageBox(_hDlg, TEXT("Error\n Invalid Input detected Please only enter numerical values"), TEXT("Error"), MB_ICONERROR | MB_OK);
-
+				
+				deleteMatrix(strMatrixA);
+				deleteMatrix(strMatrixB);
+								
 				return false;
 			}
 		}
@@ -407,9 +415,11 @@ bool GetMatrix(HWND _hDlg, vector<vector<float>*>* _pMatrixA,vector<vector<float
 		(*_pMatrixB).push_back(vpfTempB);
 		
 		//clear the temp row
-		vpfTempA = new vector<float>;
-		vpfTempB = new vector<float>;
 	}
+	
+	//clean Up
+	deleteMatrix(strMatrixA);
+	deleteMatrix(strMatrixB);
 
 	return true;
 }
@@ -609,11 +619,8 @@ bool SetMatrix(HWND _hDlg, vector<vector<float>*>* _pMatrix, int _iChoice)
 		break;
 	}
 
-	
-
 	//delete the matrix no longer required
-	delete _pMatrix;
-	_pMatrix = 0;
+	deleteMatrix(_pMatrix);
 
 	return (true);
 
@@ -648,6 +655,9 @@ bool SetScalar(HWND _hDlg, int _iMatrixChoice, float* _pfResult)
 		}
 		break;
 	}
+	delete _pfResult;
+	_pfResult = 0;
+
 	
 	return (true);
 }
@@ -665,19 +675,22 @@ bool SetToI(HWND _hDlg, int _iMatrixChoice)
 	//create the matrix from given values 
 	vector<vector<float>*>* TheMatrixA = new vector<vector<float>*>;
 	vector<vector<float>*>* TheMatrixB = new vector<vector<float>*>;
-	vector<vector<float>*>* TheMatrix = new vector<vector<float>*>;
+	
 	if (GetMatrix(_hDlg, TheMatrixA, TheMatrixB))
 	{
+		vector<vector<float>*>* TheMatrix = 0;
 		switch (_iMatrixChoice)
 		{
 			case A:
 			{
 				TheMatrix = TheMatrixA;
+				deleteMatrix(TheMatrixB);
 			}
 			break;
 			case B:
 			{
 				TheMatrix = TheMatrixB;
+				deleteMatrix(TheMatrixA);
 			}
 			break;
 		}
@@ -701,14 +714,13 @@ bool SetToI(HWND _hDlg, int _iMatrixChoice)
 
 		//set text boxes using the matrix
 		SetMatrix(_hDlg, TheMatrix, _iMatrixChoice);
-		return true;
 	}
 	else
 	{
 		return false;
 	}
-
-
+	
+	return true;
 
 }
 
@@ -721,28 +733,27 @@ bool SetToI(HWND _hDlg, int _iMatrixChoice)
 ********************/
 bool ScalarMultiply(HWND _hDlg, int _iMatrixChoice)
 {
-	float* fpScalar = new float;
-
-
+	float fpScalar = 0.0f;
+	
 	//create the matrix from given values 
 	vector<vector<float>*>* TheMatrixA = new vector<vector<float>*>;
 	vector<vector<float>*>* TheMatrixB = new vector<vector<float>*>;
-	vector<vector<float>*>* TheMatrix = new vector<vector<float>*>;
-
-	
-
-	if (GetMatrix(_hDlg, TheMatrixA, TheMatrixB) && GetScalar(_hDlg, _iMatrixChoice, fpScalar))
+		
+	if (GetMatrix(_hDlg, TheMatrixA, TheMatrixB) && GetScalar(_hDlg, _iMatrixChoice, &fpScalar))
 	{
+		vector<vector<float>*>* TheMatrix = 0;
 		switch (_iMatrixChoice)
 		{
 		case A:
 		{
 			TheMatrix = TheMatrixA;
+			deleteMatrix(TheMatrixB);
 		}
 			break;
 		case B:
 		{
 			TheMatrix = TheMatrixB;
+			deleteMatrix(TheMatrixA);
 		}
 			break;
 		}
@@ -752,7 +763,7 @@ bool ScalarMultiply(HWND _hDlg, int _iMatrixChoice)
 			for (int iCol = 0; iCol < 4; iCol++)
 			{
 				//multiply every element by the scallar
-				((*(*TheMatrix)[iRow])[iCol]) = ((*(*TheMatrix)[iRow])[iCol]) * (*fpScalar);
+				((*(*TheMatrix)[iRow])[iCol]) = ((*(*TheMatrix)[iRow])[iCol]) * (fpScalar);
 				
 			}
 
@@ -760,13 +771,16 @@ bool ScalarMultiply(HWND _hDlg, int _iMatrixChoice)
 
 		//set text boxes using the matrix
 		SetMatrix(_hDlg, TheMatrix, _iMatrixChoice);
-		return true;
+		
 	}
 	else
 	{
+		deleteMatrix(TheMatrixB);
+		deleteMatrix(TheMatrixA);
 		return false;
 	}
-
+		
+	return true;
 }
 
 /***********************
@@ -794,7 +808,6 @@ bool Add(HWND _hDlg)
 		tempRow = new vector<float>;
 	}
 
-
 	if (GetMatrix(_hDlg, TheMatrixA, TheMatrixB))
 	{
 		
@@ -804,17 +817,26 @@ bool Add(HWND _hDlg)
 			{
 				((*(*TheMatrix)[iRow])[iCol]) = ((*(*TheMatrixA)[iRow])[iCol]) + ((*(*TheMatrixB)[iRow])[iCol]);
 			}
-
 		}
 
 		//set text boxes using the matrix
 		SetMatrix(_hDlg, TheMatrix, Result);
-		return true;
+		
 	}
 	else
 	{
+		deleteMatrix(TheMatrixA);
+		deleteMatrix(TheMatrixB);
 		return false;
 	}
+
+	delete tempRow;
+	tempRow = 0;
+		
+	deleteMatrix(TheMatrixA);
+	deleteMatrix(TheMatrixB);
+		
+	return true;
 
 }
 
@@ -859,17 +881,23 @@ bool Sub(HWND _hDlg)
 
 		//set text boxes using the matrix
 		SetMatrix(_hDlg, TheMatrix, Result);
-		return true;
+		//return true;
 	}
 	else
 	{
+		deleteMatrix(TheMatrixA);
+		deleteMatrix(TheMatrixB);
+		delete tempRow;
+		tempRow = 0;
 		return false;
 	}
+	
+	delete tempRow;
+	tempRow = 0;
+	deleteMatrix(TheMatrixA);
+	deleteMatrix(TheMatrixB);
 
-	
-	
-	
-
+	return true;
 }
 
 /***********************
@@ -937,12 +965,23 @@ bool Transpose(HWND _hDlg, int _iMatrixChoice)
 
 		//set text boxes using the matrix
 		SetMatrix(_hDlg, TheMatrix, _iMatrixChoice);
-		return true;
+	
 	}
 	else
 	{
+		delete tempRow;
+		tempRow = 0;
+		deleteMatrix(TheMatrixA);
+		deleteMatrix(TheMatrixB);
 		return false;
 	}
+
+	delete tempRow;
+	tempRow = 0;
+	deleteMatrix(TheMatrixA);
+	deleteMatrix(TheMatrixB);
+	return true;
+
 }
 
 /***********************
@@ -1013,13 +1052,23 @@ bool MatrixMultiply(HWND _hDlg, int _iMatrixChoice)
 
 		//set text boxes using the matrix
 		SetMatrix(_hDlg, TheMatrix, Result);
-		return true;
+		
 	}
 	else
 	{
+		delete tempRow;
+		tempRow = 0;
+		deleteMatrix(TheMatrixA);
+		deleteMatrix(TheMatrixB);
 		return false;
 	}
+
+	delete tempRow;
+	tempRow = 0;
+	deleteMatrix(TheMatrixA);
+	deleteMatrix(TheMatrixB);
 	
+	return true;
 }
 
 /***********************
@@ -1035,23 +1084,26 @@ bool Magnitude(HWND _hDlg, int _iMatrixChoice)
 	//create the matrix from given values 
 	vector<vector<float>*>* TheMatrixA = new vector<vector<float>*>;
 	vector<vector<float>*>* TheMatrixB = new vector<vector<float>*>;
-	vector<vector<float>*>* TheMatrix = new vector<vector<float>*>;
-
+	
 	float* pfMag = new float;
 	(*pfMag) = 0;
-	
+		
 	if (GetMatrix(_hDlg, TheMatrixA, TheMatrixB) )
 	{
+		vector<vector<float>*>* TheMatrix = 0;
 		switch (_iMatrixChoice)
 		{
 		case A:
 		{
 			TheMatrix = TheMatrixA;
+			deleteMatrix(TheMatrixB);
 		}
 			break;
 		case B:
 		{
 			TheMatrix = TheMatrixB;
+			deleteMatrix(TheMatrixA);
+		
 		}
 			break;
 		}
@@ -1060,16 +1112,13 @@ bool Magnitude(HWND _hDlg, int _iMatrixChoice)
 
 		//set text boxes using the matrix
 		SetScalar(_hDlg, _iMatrixChoice, pfMag);
-
-		delete TheMatrix;
-		TheMatrix = 0;
-
-		return true;
+		deleteMatrix(TheMatrix);
 	}
 	else
 	{
 		return false;
 	}
+		
 }
 
 /***********************
@@ -1127,7 +1176,12 @@ float Det(vector<vector<float>*>* _Matrix)
 			//recursion
 			//value to be return is the matrix element multiplied by the determinant of the smaller matrix
 			fReturnVal += MatrixElement[i] * Det(SmallerMatrix);
+			delete tempRow;
+			tempRow = 0;
+			deleteMatrix(SmallerMatrix);
 		}
+		
+
 		return fReturnVal;
 	}
 }
@@ -1144,25 +1198,28 @@ bool Inverse(HWND _hDlg, int _iMatrixChoice)
 	//create the matrix from given values 
 	vector<vector<float>*>* TheMatrixA = new vector<vector<float>*>;
 	vector<vector<float>*>* TheMatrixB = new vector<vector<float>*>;
-	vector<vector<float>*>* TheMatrix = new vector<vector<float>*>;
-
-	float oneOverDet = 0;
-
 	
+	float oneOverDet = 0;
+		
 	if (GetMatrix(_hDlg, TheMatrixA, TheMatrixB))
 	{
+		vector<vector<float>*>* TheMatrix = 0;
 		switch (_iMatrixChoice)
 		{
 		case A:
 		{
 			TheMatrix = Adj(TheMatrixA);
 			oneOverDet = Det(TheMatrixA);
+			deleteMatrix(TheMatrixB);
+			deleteMatrix(TheMatrixA);
 		}
 			break;
 		case B:
 		{
 			TheMatrix = Adj(TheMatrixB);
 			oneOverDet = Det(TheMatrixB);
+			deleteMatrix(TheMatrixA);
+			deleteMatrix(TheMatrixB);
 		}
 			break;
 		}
@@ -1177,30 +1234,27 @@ bool Inverse(HWND _hDlg, int _iMatrixChoice)
 					((*(*TheMatrix)[iRow])[iCol]) = ((*(*TheMatrix)[iRow])[iCol]) * oneOverDet;
 				}
 			}
-
-
+			
 			//set text boxes using the matrix
-			SetMatrix(_hDlg, TheMatrix, _iMatrixChoice);
-			return true;
+			//SetMatrix(_hDlg, TheMatrix, _iMatrixChoice);
+			deleteMatrix(TheMatrix);
+			//return true;
 		}
 		else //inverse does not exist
 		{
 			Initialise(_hDlg);
-
 			MessageBox(_hDlg, TEXT("No inverse exists!"), TEXT("No Inverse"), MB_ICONERROR | MB_OK);
-
-
-			delete TheMatrix;
-			TheMatrix = 0;
-
-			return true;
+			deleteMatrix(TheMatrix);
+			//return true;
 		}
 	}
 	else
 	{
+		deleteMatrix(TheMatrixA);
+		deleteMatrix(TheMatrixB);
 		return false;
 	}
-
+	return true;
 	
 }
 
@@ -1228,6 +1282,7 @@ vector<vector<float>*>* Adj(vector<vector<float>*>* _Matrix)
 		tempRowA = new vector<float>;
 	}
 	
+
 	for (int iRow = 0; iRow < 4; iRow++)
 	{
 		for (int iCol = 0; iCol < 4; iCol++)
@@ -1238,11 +1293,15 @@ vector<vector<float>*>* Adj(vector<vector<float>*>* _Matrix)
 		tempRowA = new vector<float>;
 	}
 	
+	delete tempRowA;
+	tempRowA = 0;
+
+
 	for (unsigned int i = 0; i < 4; i++)
 	{
 		for (unsigned int j = 0; j < 4; j++)
 		{
-			vector<vector<float>*>* SmallerMatrix = new vector < vector<float>* >;
+			vector<vector<float>*>* SmallerMatrix = new vector <vector<float>*>;
 			vector<float>* tempRow = new vector<float>;
 			//get the minor matrix of each element in the matrix
 			for (unsigned int iRow = 0; iRow < 4; iRow++)
@@ -1262,8 +1321,13 @@ vector<vector<float>*>* Adj(vector<vector<float>*>* _Matrix)
 					SmallerMatrix->push_back(tempRow);
 					tempRow = new vector<float>;
 				}
+				
 
 			}
+			delete tempRow;
+			tempRow = 0;
+
+
 			//each element in the matrix become the determinant of its minor matrix
 			//and when i + j = and odd number multiply by -1, to get its cofactor matrix
 			if ((i + j) % 2) //i is odd)
@@ -1274,7 +1338,7 @@ vector<vector<float>*>* Adj(vector<vector<float>*>* _Matrix)
 			{
 				(*(*TheMatrix)[i])[j] =  Det(SmallerMatrix);
 			}
-			
+			deleteMatrix(SmallerMatrix);
 		}
 	}
 
@@ -1287,8 +1351,43 @@ vector<vector<float>*>* Adj(vector<vector<float>*>* _Matrix)
 		}
 	}
 
-	delete TheMatrix;
-	TheMatrix = 0;
-	
+	deleteMatrix(TheMatrix);
+			
 	return TransMatrix;
+}
+
+/***********************
+* deleteMatrix: Delete a matrix
+* @author: Jc Fowles
+* @parameter: _Matrix: The matrix to be deleted
+* @return: vector<vector<float>*>* : pointer to the adjoint matrix
+********************/
+void deleteMatrix(vector<vector<float>*>* _Matrix)
+{
+	while(!((*_Matrix).empty()))
+	{
+		delete (*_Matrix).back();
+		(*_Matrix).back() = 0;
+		(*_Matrix).pop_back();
+	}
+	delete _Matrix;
+	_Matrix = 0;
+}
+
+/***********************
+* deleteMatrix: Delete a matrix
+* @author: Jc Fowles
+* @parameter: _Matrix: The matrix to be deleted
+* @return: vector<vector<float>*>* : pointer to the adjoint matrix
+********************/
+void deleteMatrix(vector<vector<string>*>* _Matrix)
+{
+	while(!((*_Matrix).empty()))
+	{
+		delete (*_Matrix).back();
+		(*_Matrix).back() = 0;
+		(*_Matrix).pop_back();
+	}
+	delete _Matrix;
+	_Matrix = 0;
 }
