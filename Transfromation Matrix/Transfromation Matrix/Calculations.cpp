@@ -1166,6 +1166,7 @@ vector<vector<float>*>* RotateA(HWND _hDlg)
 	vector<float> fScalar;
 	if (GetMatrix(_hDlg, TheRowMatrix, TheColMatrix) && GetVector(_hDlg,ROTATION,&fScalar))
 	{
+		//may bi in row major not column
 		float fVersine = (1 - cos(fScalar[3]*PI_OVR_180));
 		float fCosine = (cos(fScalar[3]*PI_OVR_180));
 		float fSine = (sin(fScalar[3]*PI_OVR_180));
