@@ -14,7 +14,11 @@
 #pragma once
 //local includes
 #include "Source.h"
-//#include "vld.h"
+#include "vld.h"
+
+/**********************************************************************NOTE**********************************************************************/
+/*********************************************Read all Row as column and column as row***********************************************************/
+
 
 HWND g_ComboBox;
 stack<int> g_TStack;
@@ -51,7 +55,6 @@ BOOL CALLBACK DialogProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam)
 									
 					//Print the selected choice to a seprate text box
 					SetDlgItemText(hDlg, IDC_Q, (LPCWSTR)g_strQueue);
-
 				}
 				break;
 			}
@@ -67,9 +70,10 @@ BOOL CALLBACK DialogProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam)
 
 					//store the identity matrix in the combined to start with
 					vector<vector<float>*>* TheCombineMatrix = new vector<vector<float>*>;
-					vector<float>* tempRow = new vector<float>;
+					vector<float>* tempRow ;//= new vector<float>;
 					for (int iRow = 0; iRow < 4; iRow++)
-					{
+					{	
+						tempRow = new vector<float>;
 						for (int iCol = 0; iCol < 4; iCol++)
 						{
 							if(iRow == iCol)
@@ -82,7 +86,7 @@ BOOL CALLBACK DialogProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam)
 							}
 						}
 						TheCombineMatrix->push_back(tempRow);
-						tempRow = new vector<float>;
+						//tempRow = new vector<float>;
 					}
 
 					//if no choice was selected print out the identity matrix
@@ -96,18 +100,19 @@ BOOL CALLBACK DialogProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam)
 						{
 							//create a temparary matrix to store the result
 							vector<vector<float>*>* TheTempMatrix = new vector<vector<float>*>;
-							vector<float>* tempRowA = new vector<float>;
+							vector<float>* tempRowA ;//= new vector<float>;
 							for (int iRow = 0; iRow < 4; iRow++)
 							{
+								tempRowA = new vector<float>;
 								for (int iCol = 0; iCol < 4; iCol++)
 								{
 									tempRowA->push_back(0);
 								}
 								TheTempMatrix->push_back(tempRowA);
-								tempRowA = new vector<float>;
+								//tempRowA = new vector<float>;
 							}
 
-							//decide what Transformation 
+							//decide what Transformation //concider these as coloumn major
 							switch(g_TStack.top())
 							{
 							case SCALE:
@@ -148,6 +153,7 @@ BOOL CALLBACK DialogProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam)
 									}
 								}
 							}
+										
 
 							while(!(TheCombineMatrix->empty()))
 							{
@@ -189,26 +195,7 @@ BOOL CALLBACK DialogProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam)
 
 						_tcscpy_s(g_strQueue,reset);
 						SetDlgItemText(hDlg, IDC_Q, (LPCWSTR)g_strQueue);
-						
-						//memory Clean up
-						/*while(!(TheRowMatrix->empty()))
-						{
-							delete TheRowMatrix->back();
-							TheRowMatrix->back() = 0;
-							TheRowMatrix->pop_back();
-						}
-						delete TheRowMatrix;
-						TheRowMatrix = 0;
-						
-						while(!(TheColMatrix->empty()))
-						{
-							delete TheColMatrix->back();
-							TheColMatrix->back() = 0;
-							TheColMatrix->pop_back();
-						}
-						delete TheColMatrix;
-						TheColMatrix = 0;*/
-
+										
 						while(!(TheCombineMatrix->empty()))
 						{
 							delete TheCombineMatrix->back();

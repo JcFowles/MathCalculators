@@ -14,6 +14,9 @@
 //local includes
 #include "Source.h"
 
+/**********************************************************************NOTE**********************************************************************/
+/*********************************************Read all Row as column and column as row***********************************************************/
+
 /***********************
 * Initialise: Initialises all values in the dialog box of to 0
 * @author: Jc Fowles
@@ -37,7 +40,7 @@ bool Initialise(HWND _hDlg, HWND _ComboBox)
 
 	string strTemp = FloatToString(0.0f);
 	
-	//Inisialise Matrix Row major to 0
+	//Inisialise Matrix Column major to 0
 	SetDlgItemTextA( _hDlg, IDC_ROW_00,strTemp.c_str());
 	SetDlgItemTextA( _hDlg, IDC_ROW_01,strTemp.c_str());
 	SetDlgItemTextA( _hDlg, IDC_ROW_02,strTemp.c_str());
@@ -58,7 +61,7 @@ bool Initialise(HWND _hDlg, HWND _ComboBox)
 	SetDlgItemTextA( _hDlg, IDC_ROW_32,strTemp.c_str());
 	SetDlgItemTextA( _hDlg, IDC_ROW_33,strTemp.c_str());
 	
-	//Inisialise Matrix colomn major to 0
+	//Inisialise Matrix row major to 0
 	SetDlgItemTextA( _hDlg, IDC_COL_00,strTemp.c_str());
 	SetDlgItemTextA( _hDlg, IDC_COL_01,strTemp.c_str());
 	SetDlgItemTextA( _hDlg, IDC_COL_02,strTemp.c_str());
@@ -220,8 +223,8 @@ string WideStringToString(const wchar_t* _kpwstr)
 * GetStrMatrix: Gets the values from the Matrices dialog boxes and stores it into a string vector 
 * @author: Jc Fowles
 * @parameter: _hDlg: handle to the dialog box
-* @parameter: _pMatrixA: a pointer to the matrix in whcih Row Matrix is to be stored
-* @parameter: _pMatrixB: a pointer to the matrix in whcih column Matrix is to be stored
+* @parameter: _pMatrixA: a pointer to the matrix in which Row Matrix is to be stored  //This is now the column major matrix
+* @parameter: _pMatrixB: a pointer to the matrix in which column Matrix is to be stored  // This is now the row major matrix
 * @return: bool: return true
 ********************/
 bool GetStrMatrix(HWND _hDlg, vector<vector<string>*>* _pMatrixA,vector<vector<string>*>* _pMatrixB)
@@ -375,8 +378,8 @@ bool GetStrMatrix(HWND _hDlg, vector<vector<string>*>* _pMatrixA,vector<vector<s
 * GetMatrix: Gets the values from the Matrices dialog boxes and stores it into a float vector 
 * @author: Jc Fowles
 * @parameter: _hDlg: handle to the dialog box
-* @parameter: _pMatrixA: a pointer to the matrix in whcih Matrix A to be stored
-* @parameter: _pMatrixB: a pointer to the matrix in whcih Matrix B to be stored
+* @parameter: _pMatrixA: a pointer to the matrix in which Row Matrix is to be stored  //This is now the column major matrix
+* @parameter: _pMatrixB: a pointer to the matrix in which column Matrix is to be stored  // This is now the row major matrix
 * @return: bool: return true
 ********************/
 bool GetMatrix(HWND _hDlg, vector<vector<float>*>* _pMatrixA,vector<vector<float>*>* _pMatrixB)
@@ -462,12 +465,12 @@ bool GetMatrix(HWND _hDlg, vector<vector<float>*>* _pMatrixA,vector<vector<float
 }
 
 /***********************
-* GetVector: Gets and convert data from the various dialog boxes
+* GetVector: Gets and convert data from the various scalar/vector dialog boxes
 * @author: Jc Fowles
 * @parameter: _hDlg: handle to the dialog box
-* @parameter: _iChoice: Which matrix are you working with A or B
+* @parameter: _iChoice: Which Transformation Has been choosen
 * @parameter: _fpScalar: a pointer to vector of floats, in which to store the data
-* @return: bool: return true, if no errors exist
+* @return: bool: return true
 ********************/
 bool GetVector(HWND _hDlg, int _iChoice, vector<float>* _fpScalar)
 {
@@ -569,8 +572,8 @@ bool GetVector(HWND _hDlg, int _iChoice, vector<float>* _fpScalar)
 * SetMatrix: Sets the matrix text boxes based on choosen matrix
 * @author: Jc Fowles
 * @parameter: _hDlg: handle to the dialog box
-* @parameter: _pMatrix: a pointer to the matrix which hold the values that we want to set the text boxes to
-* @parameter: _iChoice: which of the three matix text boxes to set
+* @parameter: _pRowMatrix: a pointer to the matrix in which Row Matrix is to be stored  //This is now the column major matrix
+* @parameter: _pColMatrix: a pointer to the matrix in which column Matrix is to be stored  // This is now the row major matrix
 * @return: bool: return true
 ********************/
 bool SetMatrix(HWND _hDlg, vector<vector<float>*>* _pRowMatrix, vector<vector<float>*>* _pColMatrix)
@@ -658,29 +661,8 @@ bool SetMatrix(HWND _hDlg, vector<vector<float>*>* _pRowMatrix, vector<vector<fl
 	SetDlgItemTextA(_hDlg, IDC_COL_32, strTemp.c_str());
 	strTemp = FloatToString((*(*_pColMatrix)[3])[3]);
 	SetDlgItemTextA(_hDlg, IDC_COL_33, strTemp.c_str());
-
-	/*while(!(_pRowMatrix->empty()))
-	{
-		delete _pRowMatrix->back();
-		_pRowMatrix->back() = 0;
-		_pRowMatrix->pop_back();
-	}*/
-
-	/*delete _pRowMatrix;
-	_pRowMatrix = 0;*/
-
-	/*while(!(_pColMatrix->empty()))
-	{
-		delete _pColMatrix->back();
-		_pColMatrix->back() = 0;
-		_pColMatrix->pop_back();
-	}
-*/
-	/*delete _pColMatrix;
-	_pColMatrix = 0;*/
-
+		
 	return (true);
-
 }
 
 /***********************
@@ -698,8 +680,6 @@ bool SetToI(HWND _hDlg)
 
 	if (GetMatrix(_hDlg, TheRowMatrix, TheColMatrix))
 	{
-		
-
 		for (int iRow = 0; iRow < 4; iRow++)
 		{
 			for (int iCol = 0; iCol < 4; iCol++)
@@ -728,8 +708,6 @@ bool SetToI(HWND _hDlg)
 		return false;
 	}
 
-
-
 }
 
 /***********************
@@ -742,13 +720,12 @@ vector<vector<float>*>* Scale(HWND _hDlg)
 {
 
 	//create the matrix from given values 
-	vector<vector<float>*>* TheRowMatrix = new vector<vector<float>*>;
-	vector<vector<float>*>* TheColMatrix = new vector<vector<float>*>;
+	vector<vector<float>*>* TheRowMatrix = new vector<vector<float>*>;  //This is now the column major
+	vector<vector<float>*>* TheColMatrix = new vector<vector<float>*>;	//This is now the row major
 	vector<float> fScalar;
 	if (GetMatrix(_hDlg, TheRowMatrix, TheColMatrix) && GetVector(_hDlg,SCALE,&fScalar))
 	{
 		
-
 		for (int iRow = 0; iRow < 4; iRow++)
 		{
 			for (int iCol = 0; iCol < 4; iCol++)
@@ -765,15 +742,12 @@ vector<vector<float>*>* Scale(HWND _hDlg)
 					((*(*TheColMatrix)[iRow])[iCol]) = 0;
 				}
 			}
-			
 		}
 
 		((*(*TheRowMatrix)[3])[3]) = 1;
 		((*(*TheColMatrix)[3])[3]) = 1;
 
-		//set text boxes using the matrix
-		//return TheRowMatrix;
-		SetMatrix(_hDlg, TheRowMatrix, TheColMatrix);
+		//Return the Columm major Transformation Matrix
 		return TheRowMatrix;
 	}
 	else
@@ -792,8 +766,8 @@ vector<vector<float>*>* Scale(HWND _hDlg)
 vector<vector<float>*>* Skew(HWND _hDlg)
 {
 	//create the matrix from given values 
-	vector<vector<float>*>* TheRowMatrix = new vector<vector<float>*>;
-	vector<vector<float>*>* TheColMatrix = new vector<vector<float>*>;
+	vector<vector<float>*>* TheRowMatrix = new vector<vector<float>*>;  //This is now the column major
+	vector<vector<float>*>* TheColMatrix = new vector<vector<float>*>;	//This is now the row major
 	vector<float> fScalar;
 	if (GetMatrix(_hDlg, TheRowMatrix, TheColMatrix) && GetVector(_hDlg,SKEWING,&fScalar))
 	{
@@ -818,12 +792,10 @@ vector<vector<float>*>* Skew(HWND _hDlg)
 			}
 			
 		}
-
 		((*(*TheRowMatrix)[3])[3]) = 1;
 		((*(*TheColMatrix)[3])[3]) = 1;
 
-		//set text boxes using the matrix
-		SetMatrix(_hDlg, TheRowMatrix, TheColMatrix);
+		//Return the Columm major Transformation Matrix
 		return TheRowMatrix;
 	}
 	else
@@ -842,8 +814,8 @@ vector<vector<float>*>* Skew(HWND _hDlg)
 vector<vector<float>*>* Translate(HWND _hDlg)
 {
 	//create the matrix from given values 
-	vector<vector<float>*>* TheRowMatrix = new vector<vector<float>*>;
-	vector<vector<float>*>* TheColMatrix = new vector<vector<float>*>;
+	vector<vector<float>*>* TheRowMatrix = new vector<vector<float>*>;  //This is now the column major
+	vector<vector<float>*>* TheColMatrix = new vector<vector<float>*>;	//This is now the row major
 	vector<float> fScalar;
 	if (GetMatrix(_hDlg, TheRowMatrix, TheColMatrix) && GetVector(_hDlg,TRANSLATE,&fScalar))
 	{
@@ -884,8 +856,7 @@ vector<vector<float>*>* Translate(HWND _hDlg)
 		((*(*TheRowMatrix)[3])[3]) = 1;
 		((*(*TheColMatrix)[3])[3]) = 1;
 
-		//set text boxes using the matrix
-		SetMatrix(_hDlg, TheRowMatrix, TheColMatrix);
+		//Return the Columm major Transformation Matrix
 		return TheRowMatrix;
 	}
 	else
@@ -896,7 +867,7 @@ vector<vector<float>*>* Translate(HWND _hDlg)
 }
 
 /***********************
-* Rotate: Creates and returns the transformation matrix of its type (Rotate)
+* Rotate: Creates and returns the transformation matrix of its type (Rotate)  // This is now unused Go to RotateA function
 * @author: Jc Fowles
 * @parameter: _hDlg: handle to the dialog box
 * @return: vector<vector<float>*>*: The transformation matrix
@@ -1072,8 +1043,8 @@ vector<vector<float>*>* Rotate(HWND _hDlg)
 vector<vector<float>*>* Projection(HWND _hDlg)
 {
 	//create the matrix from given values 
-	vector<vector<float>*>* TheRowMatrix = new vector<vector<float>*>;
-	vector<vector<float>*>* TheColMatrix = new vector<vector<float>*>;
+	vector<vector<float>*>* TheRowMatrix = new vector<vector<float>*>;  //This is now the column major
+	vector<vector<float>*>* TheColMatrix = new vector<vector<float>*>;	//This is now the row major
 	vector<float> fScalar;
 	if (GetMatrix(_hDlg, TheRowMatrix, TheColMatrix) && GetVector(_hDlg,PROJECTION,&fScalar))
 	{
@@ -1148,8 +1119,7 @@ vector<vector<float>*>* Projection(HWND _hDlg)
 		
 		}
 
-		//set text boxes using the matrix
-		SetMatrix(_hDlg, TheRowMatrix, TheColMatrix);
+		///Return the Columm major Transformation Matrix
 		return TheRowMatrix;
 	}
 	else
@@ -1158,11 +1128,17 @@ vector<vector<float>*>* Projection(HWND _hDlg)
 	}
 }
 
+/***********************
+* RotateA: Creates and returns the transformation matrix of its type (Rotation around an abitrary axis)  
+* @author: Jc Fowles
+* @parameter: _hDlg: handle to the dialog box
+* @return: vector<vector<float>*>*: The transformation matrix
+********************/
 vector<vector<float>*>* RotateA(HWND _hDlg)
 {
 	//create the matrix from given values 
-	vector<vector<float>*>* TheRowMatrix = new vector<vector<float>*>;
-	vector<vector<float>*>* TheColMatrix = new vector<vector<float>*>;
+	vector<vector<float>*>* TheRowMatrix = new vector<vector<float>*>;  //This is now the row major
+	vector<vector<float>*>* TheColMatrix = new vector<vector<float>*>;	//This is now the column major
 	vector<float> fScalar;
 	if (GetMatrix(_hDlg, TheRowMatrix, TheColMatrix) && GetVector(_hDlg,ROTATION,&fScalar))
 	{
@@ -1197,7 +1173,7 @@ vector<vector<float>*>* RotateA(HWND _hDlg)
 		((*(*TheRowMatrix)[3])[2]) = 0;
 		((*(*TheRowMatrix)[3])[3]) = 1;
 		
-		
+		//This return the row major , but the return expect the column major so we shall transpose it fisrt
 		for (int iRow = 0; iRow < 4; iRow++)
 		{
 			for (int iCol = 0; iCol < 4; iCol++)
@@ -1206,10 +1182,9 @@ vector<vector<float>*>* RotateA(HWND _hDlg)
 			}
 		
 		}
-
-		//set text boxes using the matrix
-		//SetMatrix(_hDlg, TheRowMatrix, TheColMatrix);
-		return TheRowMatrix;
+				
+		//concider this as the row major 
+		return TheColMatrix;
 	}
 	else
 	{
